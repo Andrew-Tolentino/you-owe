@@ -2,7 +2,6 @@ import { DBClient } from '@/db/db-client'
 import { YouOweEntity } from '@/entities/entity'
 import { SUPABASE_CLIENT } from '@/api/clients/clients'
 import Logger from '@/api/utils/logger'
-import { HTTP_CODES } from '@/api/utils/HTTPStatusCodes'
 
 const LOGGER_PREFIX = '[db/supabase-client]' 
 
