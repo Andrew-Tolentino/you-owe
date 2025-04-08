@@ -1,15 +1,12 @@
-import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { DBClient } from '@/db/db-client'
 import { YouOweEntity } from '@/entities/entity'
+import { SUPABASE_CLIENT } from '@/api/clients/clients'
+import Logger from '@/api/utils/logger'
+import { HTTP_CODES } from '@/api/utils/HTTPStatusCodes'
 
-/**
- * Singleton Supabase Client.
- */
-// The enviroment variables should not be null so "non-null assertion operator (!)"
-const client: SupabaseClient = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+const LOGGER_PREFIX = '[db/supabase-client]' 
 
-class SupaBaseClient implements DBClient {
-  
+export class SupabaseDBClient implements DBClient {  
   /**
    * Uses the Supabase client to get a row from a table given a unique ID.
    * 
@@ -18,15 +15,15 @@ class SupaBaseClient implements DBClient {
    * @returns {Promise<YouOweEntity | null>} - The row found in the table. If nothing is found, returns null.
    */
   async getEntityById(tableName: string, id: string): Promise<YouOweEntity | null> {
-    const { data, error } = await client.from(tableName).select().eq('id', id)
+    const { data, error } = await SUPABASE_CLIENT.from(tableName).select().eq('id', id)
 
-    // Log this
     if (error) {
+      Logger.info(`${LOGGER_PREFIX} getEntityById: Error thrown when finding entity with id "${id}" from the "${tableName}" table/view. Error code: "${error.code}" and message: "${error.message}".`)
       return null
     }
 
-    // Log this
     if (data.length === 0) {
+      Logger.info(`${LOGGER_PREFIX} getEntityById: Could not find entity with id "${id}" from the "${tableName}" table/view.`)
       return null
     }
 
@@ -34,24 +31,45 @@ class SupaBaseClient implements DBClient {
   }
 
   /**
-   * Uses the Supabase client to make an insertion into a table.
+   * Uses the Supabase client to get a row from a table given an auth_user_id.
    * 
-   * @param {string} tableName - Table to create a new entity in.
-   * @param {YouOweEntity} entity - Object representing the new row that will be inserted into the table.
-   * 
-   * @returns {Promise<YouOweEntity | null>} - If successful, returns the entity returned from Supabase. If not, returns null.
+   * @param {string} tableName - Table to get a row from 
+   * @param {string} authUserId - Unique ID associated to the row 
+   * @returns {Promise<YouOweEntity | null>} - The row found in the table. If nothing is found, returns null.
    */
-  async createEntityById(tableName: string, entity: YouOweEntity): Promise<YouOweEntity | null> {
-    const { data, error } =  await client.from(tableName).insert(entity)
+  async getEntityByAuthUserId(tableName: string, authUserId: string): Promise<YouOweEntity | null> {
+    const { data, error } = await SUPABASE_CLIENT.from(tableName).select().eq('auth_user_id', authUserId)
 
-    // Log this
     if (error) {
+      Logger.info(`${LOGGER_PREFIX} getEntityByAuthUserId: Error thrown when finding entity with auth_user_id "${authUserId}" from the "${tableName}" table/view. Error code: "${error.code}" and message: "${error.message}".`)
       return null
     }
 
-      
-    console.log('data', data)
-    return entity
+    if (data.length === 0) {
+      Logger.info(`${LOGGER_PREFIX} getEntityById: Could not find entity with auth_user_id "${authUserId}" from the "${tableName}" table/view.`)
+      return null
+    }
+
+    return data[0] as YouOweEntity
+  }
+
+  /**
+   * Uses the Supabase client to make aa new row into a table.
+   * 
+   * @param {string} tableName - Table to create a new entity in.
+   * @param {Partial<YouOweEntity>} entity - Object representing the new row that will be inserted into the table.
+   * 
+   * @returns {Promise<YouOweEntity | null>} - If successful, returns the entity created. Else, returns null.
+   */
+  async createEntity(tableName: string, entity: Partial<YouOweEntity>): Promise<YouOweEntity | null> {
+    const { data, error, status, statusText } =  await SUPABASE_CLIENT.from(tableName).insert(entity).select()
+
+    if (error) {
+      Logger.info(`${LOGGER_PREFIX} createEntity: Error thrown when creating an entity in the "${tableName}" table/view. Error code: "${error.code}" and message: "${error.message}". Printing out API status ${status} and status text ${statusText}`)
+      return null
+    }
+    
+    return data[0] as YouOweEntity
   }
 
   /**
@@ -63,17 +81,13 @@ class SupaBaseClient implements DBClient {
    */
   async deleteEntityById(tableName: string, id: string): Promise<boolean> {
     const date = new Date(Date.now())
-    const { error } = await client.from(tableName).update({ 'deleted_at':  date.toISOString() }).eq('id', id)
+    const { error } = await SUPABASE_CLIENT.from(tableName).update({ 'deleted_at':  date.toISOString() }).eq('id', id)
 
-    // Log this
     if (error) {
+      Logger.info(`${LOGGER_PREFIX} deleteEntityById: Error thrown when creating deleting an entity in the "${tableName}" table/view. Error code: "${error.code}" and message: "${error.message}".`)
       return false
     }
 
     return true
   }
 }
-
-/** Default export which uses only one instance of SupaBaseClient. */
-const singletonSupaBaseClient =  new SupaBaseClient()
-export default singletonSupaBaseClient
