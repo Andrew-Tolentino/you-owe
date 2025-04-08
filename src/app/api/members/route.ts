@@ -8,12 +8,24 @@ import { Members, TABLE_NAME } from '@/entities/members'
 
 const LOGGER_PREFIX = '[app/api/members/route]' 
 
+/**
+ * HTTP POST method to create a new User and Member.
+ * These entities are connected through the User's auth_user_id via FK in the Members table.
+ * 
+ * @param {Request} request - Required to contain the 'NewMemberDTO' within the request body.
+ */
 export async function POST(request: Request) {
   const requestBody: NewMemberDTO = await request.json()
   const validationError = validateNewMemberDTO(requestBody)
   if (validationError !== null) {
     return Response.json({ validationError }, { status: HTTP_CODES.BAD_REQUEST })
   }
+
+  /**
+   * Edge cases to think about in the future
+   *  1. What if an error occurs during the Members DB insertion after creating an anonymous user?
+   *    a. Do we need a plan to delete the created user?
+   */
 
   // Create anonymous user
   const { data, error } = await SUPABASE_CLIENT.auth.signInAnonymously()
