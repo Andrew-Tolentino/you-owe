@@ -10,12 +10,19 @@ const LOGGER_PREFIX = '[app/api/members/route]'
 
 /**
  * HTTP POST method to create a new User and Member.
- * These entities are connected through the User's auth_user_id via FK in the Members table.
+ * The User and Member entities are connected through the User's auth_user_id via FK in the Members table.
  * 
  * @param {Request} request - Required to contain the 'NewMemberDTO' within the request body.
  */
 export async function POST(request: Request) {
   const requestBody: NewMemberDTO = await request.json()
+
+  /** Cleanup
+   * TODO: Maybe this can be a function in the DTO itself?
+   */
+  // Trim 'name'
+  requestBody.name = requestBody.name.trim()
+
   const validationError = validateNewMemberDTO(requestBody)
   if (validationError !== null) {
     return Response.json({ validationError }, { status: HTTP_CODES.BAD_REQUEST })
