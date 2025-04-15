@@ -8,5 +8,9 @@ export const HTTP_CODES = {
 }
 
 export const HTTP_ERROR_MESSAGES = {
-  INTERNAL_SERVER_ERROR: 'Looks like an error on our side. Sorry about that!'
+  INTERNAL_SERVER_ERROR: 'Looks like an error on our side. Sorry about that!',
+}
+
+export const ERROR_MESSAGE_FUNCTIONS = {
+  RESOURCE_WITH_ID_NOT_FOUND: (resourceName: string, id: string) => `${resourceName} with id ${id} could not be found.`
 }
