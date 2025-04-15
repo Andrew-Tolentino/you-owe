@@ -15,18 +15,20 @@ const LOGGER_PREFIX = '[app/api/members/route]'
  * @param {Request} request - Required to contain the 'NewMemberDTO' within the request body.
  */
 export async function POST(request: Request) {
-  const requestBody: NewMemberDTO = await request.json()
-
-  /** Cleanup
-   * TODO: Maybe this can be a function in the DTO itself?
-   */
-  // Trim 'name'
-  requestBody.name = requestBody.name.trim()
-
-  const validationError = validateNewMemberDTO(requestBody)
-  if (validationError !== null) {
-    return Response.json({ validationError }, { status: HTTP_CODES.BAD_REQUEST })
+  let requestBody: NewMemberDTO | null = null
+  try {
+    requestBody = await request.json()
+  } catch(err) {
+    Logger.info(`${LOGGER_PREFIX} POST: Error when loading in request body. Error found: ${JSON.stringify(err)}`)
   }
+  
+  // Validate DTO
+  const validationError = validateNewMemberDTO(requestBody as NewMemberDTO)
+  if (validationError !== null) {
+    return Response.json({ error: validationError }, { status: HTTP_CODES.BAD_REQUEST })
+  }
+
+  const newMemberDTO: NewMemberDTO = { name: requestBody!.name.trim() }
 
   /**
    * Edge cases to think about in the future
@@ -44,7 +46,7 @@ export async function POST(request: Request) {
   if (data.user) {
     // Create new member row in DB
     const db: DBClient = new SupabaseDBClient()
-    const partialMember: Partial<Members> = { name: requestBody.name, auth_user_id: data.user.id }
+    const partialMember: Partial<Members> = { name: newMemberDTO.name, auth_user_id: data.user.id }
     const newMember = await db.createEntity(TABLE_NAME, partialMember)
     if (newMember) {
       return Response.json(newMember, { status: HTTP_CODES.CREATED })
