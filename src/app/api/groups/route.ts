@@ -11,7 +11,7 @@ const LOGGER_PREFIX = '[app/api/groups/route]'
 /**
  * HTTP POST method to create a new Group.
  * 
- * @param {Request} request 
+ * @param {Request} request - Required to contain the 'NewGroupDTO' within the request body
  */
 export async function POST(request: Request) {
   let requestBody: NewGroupDTO | null = null
