@@ -1,6 +1,6 @@
 import { HTTP_CODES } from '@/api/utils/HTTPStatusCodes'
 import { SupabaseDBClient } from '@/db/supabase-client'
-import { TABLE_NAME } from '@/entities/members'
+import { Members, TABLE_NAME } from '@/entities/members'
 
 /**
  * HTTP GET method to retrieve a Member a Member ID. 
@@ -20,8 +20,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 
   // Fetch Members entity with given ID
   const db = new SupabaseDBClient()
-  const member = await db.getEntityById(TABLE_NAME, id)
-  if (member === null) {
+  const member: Members | null = await db.getEntityById(TABLE_NAME, id) as Members
+  if (member === null || member?.deleted_at !== null) {
     return Response.json({ error: `Member with ID '${id}' could not be found.` }, { status: HTTP_CODES.NOT_FOUND })
   }
 
