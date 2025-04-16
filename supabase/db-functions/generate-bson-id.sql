@@ -1,4 +1,4 @@
--- Unique ID for all tables
+-- Unique ID for all tables.
 CREATE OR REPLACE FUNCTION "public".generate_bson_id() RETURNS varchar AS $$
   DECLARE
     time_component bigint;

@@ -5,7 +5,7 @@ CREATE TABLE "public"."members" (
   "deleted_at" timestamp WITH TIME ZONE,
   "auth_user_id" uuid NOT NULL UNIQUE,
 
-  CONSTRAINT fk_user_profiles_auth_users_id
+  CONSTRAINT fk_members_auth_users_id
     FOREIGN KEY("auth_user_id")
       REFERENCES "auth"."users"(id)
       ON DELETE CASCADE
