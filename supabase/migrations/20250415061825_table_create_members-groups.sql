@@ -1,0 +1,13 @@
+CREATE TABLE "public"."members_groups" (
+  "member_id" varchar(24) NOT NULL,
+  "group_id" varchar(24) NOT NULL,
+
+  CONSTRAINT fk_member_id
+    FOREIGN KEY("member_id")
+    REFERENCES "public"."members"(id),
+  
+  CONSTRAINT fk_group_id
+    FOREIGN KEY("group_id")
+    REFERENCES "public"."groups"(id)
+    ON DELETE CASCADE
+);
