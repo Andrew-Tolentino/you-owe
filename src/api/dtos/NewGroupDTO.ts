@@ -39,12 +39,18 @@ export function validateNewGroupDTO(DTO: NewGroupDTO): string | null {
   }
 
   // Group can require a password to join
-  if (isString(password ?? '')) {
-    // Group password should be at least 6 characters long
-    if (password!.trim().length < 6) {
-      return "'password' should be at least 6 characters long."
+  if (password) {
+    if (isString(password)) {
+      // Group password should be at least 6 characters long
+      if (password!.trim().length < 6) {
+        return "'password' should be at least 6 characters long."
+      }
+    } else {
+      // password field does have a value but is not a string
+      return "'password' field is invalid."
     }
   }
+
 
   return null
 }
