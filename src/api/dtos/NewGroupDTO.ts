@@ -16,6 +16,7 @@ interface NewGroupDTO {
   password?: string | null
 
   /**
+   * Optional - There are other ways of creating a Group where the Member ID is not needed (new user creating a Group for the first time).
    * ID of Member who is creating the Group.
    */
   creator_member_id?: string
