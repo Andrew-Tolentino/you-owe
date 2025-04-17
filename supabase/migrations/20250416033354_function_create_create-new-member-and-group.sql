@@ -21,10 +21,6 @@ CREATE OR REPLACE FUNCTION "public".create_new_member_and_group(
     VALUES (group_name, new_member_id, group_password)
     RETURNING id into new_group_id;
 
-    -- 3. Create a new entry in MembersGroups
-    INSERT INTO "public"."members_groups"(member_id, group_id)
-    VALUES (new_member_id, new_group_id);
-
     RETURN new_group_id;
   END;
 $$ LANGUAGE PLPGSQL;

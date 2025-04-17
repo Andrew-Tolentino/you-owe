@@ -6,6 +6,5 @@ CREATE OR REPLACE FUNCTION "public".new_group_members_groups_trigger() RETURNS T
     VALUES (NEW.creator_member_id, NEW.id);
 
     RETURN NEW;
-    -- 
   END;
 $$ LANGUAGE PLPGSQL;
