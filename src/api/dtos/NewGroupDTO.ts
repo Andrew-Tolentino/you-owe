@@ -51,6 +51,5 @@ export function validateNewGroupDTO(DTO: NewGroupDTO): string | null {
     }
   }
 
-
   return null
 }
