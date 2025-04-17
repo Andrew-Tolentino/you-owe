@@ -1,10 +1,10 @@
-import { NewMemberDTO, validateNewMemberDTO } from '@/api/dtos/NewMemberDTO'
+import { type NewMemberDTO, validateNewMemberDTO } from '@/api/dtos/NewMemberDTO'
 import { HTTP_CODES, HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
 import { SUPABASE_CLIENT } from '@/api/clients/clients'
 import Logger from '@/api/utils/logger'
 import { DBClient } from '@/db/db-client'
 import { SupabaseDBClient } from '@/db/supabase-client'
-import { Members, TABLE_NAME } from '@/entities/members'
+import { type Members, TABLE_NAME } from '@/entities/members'
 
 const LOGGER_PREFIX = '[app/api/members/route]' 
 
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   try {
     requestBody = await request.json()
   } catch(err) {
-    Logger.info(`${LOGGER_PREFIX} POST: Error when loading in request body. Error found: ${JSON.stringify(err)}`)
+    Logger.error(`${LOGGER_PREFIX} POST: Error when loading in request body. Error found: ${JSON.stringify(err)}`)
     return new Response(null, { status: HTTP_CODES.BAD_REQUEST })
   }
   
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
   // Create anonymous user
   const { data, error } = await SUPABASE_CLIENT.auth.signInAnonymously()
   if (error !== null) {
-    Logger.info(`${LOGGER_PREFIX} POST: Error when creating an anonymous user. Error code: ${error.code} and message: ${error.message}`)
+    Logger.error(`${LOGGER_PREFIX} POST: Error when creating an anonymous user. Error code: ${error.code} and message: ${error.message}`)
     return Response.json(HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR, { status: HTTP_CODES.INTERNAL_SERVER_ERROR })
   }
 

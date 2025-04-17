@@ -1,8 +1,16 @@
 import { isString } from '@/api/utils/validators'
 
-export interface NewMemberDTO {
+/**
+ * DTO that can be use to create a new Member.
+ */
+interface NewMemberDTO {
+  /**
+   * The name of the new Member.
+   */
   name: string
 }
+
+export type { NewMemberDTO }
 
 /**
  * Validates an incoming NewMemberDTO checking if the request has fulfilled all

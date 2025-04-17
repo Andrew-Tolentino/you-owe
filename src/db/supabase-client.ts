@@ -1,11 +1,11 @@
 import { DBClient } from '@/db/db-client'
-import { YouOweEntity } from '@/entities/entity'
+import { type YouOweEntity } from '@/entities/entity'
 import { SUPABASE_CLIENT } from '@/api/clients/clients'
 import Logger from '@/api/utils/logger'
 
 const LOGGER_PREFIX = '[db/supabase-client]' 
 
-export class SupabaseDBClient implements DBClient {  
+export class SupabaseDBClient implements DBClient {
   /**
    * Uses the Supabase client to get a row from a table given a unique ID.
    * 
@@ -17,7 +17,7 @@ export class SupabaseDBClient implements DBClient {
     const { data, error } = await SUPABASE_CLIENT.from(tableName).select().eq('id', id)
 
     if (error) {
-      Logger.info(`${LOGGER_PREFIX} getEntityById: Error thrown when finding entity with id "${id}" from the "${tableName}" table/view. Error code: "${error.code}" and message: "${error.message}".`)
+      Logger.error(`${LOGGER_PREFIX} getEntityById: Error thrown when finding entity with id "${id}" from the "${tableName}" table/view. Error code: "${error.code}" and message: "${error.message}".`)
       return null
     }
 
@@ -40,7 +40,7 @@ export class SupabaseDBClient implements DBClient {
     const { data, error } = await SUPABASE_CLIENT.from(tableName).select().eq('auth_user_id', authUserId)
 
     if (error) {
-      Logger.info(`${LOGGER_PREFIX} getEntityByAuthUserId: Error thrown when finding entity with auth_user_id "${authUserId}" from the "${tableName}" table/view. Error code: "${error.code}" and message: "${error.message}".`)
+      Logger.error(`${LOGGER_PREFIX} getEntityByAuthUserId: Error thrown when finding entity with auth_user_id "${authUserId}" from the "${tableName}" table/view. Error code: "${error.code}" and message: "${error.message}".`)
       return null
     }
 
@@ -64,7 +64,7 @@ export class SupabaseDBClient implements DBClient {
     const { data, error, status, statusText } =  await SUPABASE_CLIENT.from(tableName).insert(entity).select()
 
     if (error) {
-      Logger.info(`${LOGGER_PREFIX} createEntity: Error thrown when creating an entity in the "${tableName}" table/view. Error code: "${error.code}" and message: "${error.message}". Printing out API status ${status} and status text ${statusText}`)
+      Logger.error(`${LOGGER_PREFIX} createEntity: Error thrown when creating an entity in the "${tableName}" table/view. Error code: "${error.code}" and message: "${error.message}". Printing out API status ${status} and status text ${statusText}`)
       return null
     }
     
@@ -83,7 +83,54 @@ export class SupabaseDBClient implements DBClient {
     const { error } = await SUPABASE_CLIENT.from(tableName).update({ 'deleted_at':  date.toISOString() }).eq('id', id)
 
     if (error) {
-      Logger.info(`${LOGGER_PREFIX} deleteEntityById: Error thrown when creating deleting an entity in the "${tableName}" table/view. Error code: "${error.code}" and message: "${error.message}".`)
+      Logger.error(`${LOGGER_PREFIX} deleteEntityById: Error thrown when creating deleting an entity in the "${tableName}" table/view. Error code: "${error.code}" and message: "${error.message}".`)
+      return false
+    }
+
+    return true
+  }
+
+  /**
+   * Uses the Supabase client to invoke a stored procedure with the expectation of a return value.
+   * 
+   * @param {string} procName - Name of the stored procedure to be executed. 
+   * @param {object?} parameters - Object containing arguments that is needed for stored procedure.
+   * 
+   * @returns {Promise<T | null>} Returns specified type T if successfull or null if stored procedure failed.
+   */
+  async invokeStoredProcedure<T>(procName: string, parameters?: object): Promise<T | null> {
+    const { data, error } = parameters ? await SUPABASE_CLIENT.rpc(procName, parameters) : await SUPABASE_CLIENT.rpc(procName)
+    if (error) {
+      Logger.error(`${LOGGER_PREFIX} invokeStoredProcedure: Error when calling stored procedure. Error code: "${error.code}" and message: "${error.message}".`)
+      return null
+    }
+
+    Logger.info(`${LOGGER_PREFIX} invokeStoredProcedure: data - ${JSON.stringify(data)}`)
+
+    if (data) {
+      return data as T
+    }
+
+    return null
+  }
+
+  /**
+   * Uses the Supabase client to invoke a stored procedure with the expectation of no return value.
+   * 
+   * @param {string} procName - Name of the stored procedure to be executed. 
+   * @param {object?} parameters - Object containing arguments that is needed for stored procedure.
+   * 
+   * @returns {Promise<boolean>} Returns true if stored procedure executed successfully, else false.
+   */
+  async invokeStoredProcedureVoid(procName: string, parameters?: object): Promise<boolean> {
+    const { data, error } = parameters ? await SUPABASE_CLIENT.rpc(procName, parameters) : await SUPABASE_CLIENT.rpc(procName)
+    if (error) {
+      Logger.error(`${LOGGER_PREFIX} invokeStoredProcedureVoid: Error when calling stored procedure. Error code: "${error.code}" and message: "${error.message}".`)
+      return false
+    }
+
+    if (data.status !== 200) {
+      Logger.info(`${LOGGER_PREFIX} invokeStoredProcedureVoid: Failed to return a success status after executed store procedure '${procName}' using the following arguments ${parameters ? JSON.stringify(parameters) : ''}. Status code received '${data.status}' and status text received '${data.statusText}'.`)
       return false
     }
 
