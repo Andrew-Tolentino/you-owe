@@ -20,6 +20,7 @@ export async function POST(request: Request) {
     requestBody = await request.json()
   } catch(err) {
     Logger.info(`${LOGGER_PREFIX} POST: Error when loading in request body. Error found: ${JSON.stringify(err)}`)
+    return new Response(null, { status: HTTP_CODES.BAD_REQUEST })
   }
   
   // Validate DTO
