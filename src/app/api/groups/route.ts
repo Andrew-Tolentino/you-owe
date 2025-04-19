@@ -70,7 +70,7 @@ export function validateNewGroupDTO(DTO: NewGroupDTO): string | null {
     return "'name' field is invalid."
   }
 
-  // Group can require a password to join
+  // Validate Groups with passwords if provided
   const groupPasswordErrorValidationMessage = isValidGroupPassword(password)
   if (groupPasswordErrorValidationMessage !== null) {
     return groupPasswordErrorValidationMessage
