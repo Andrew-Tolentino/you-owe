@@ -14,7 +14,7 @@ interface Groups extends YouOweEntity {
   /**
    * Optional - Password required to join the Group.
    */
-  password?: string | null
+  // password?: string | null
 
   /**
    * ID of the Member entity who created the Group.

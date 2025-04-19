@@ -4,6 +4,7 @@ import { type Members, TABLE_NAME } from '@/entities/members'
 
 /**
  * HTTP GET method to retrieve a Member a Member ID. 
+ * 
  * @param {Request} _request 
  * @param {Object} params - Destructuring of an Object that contains the ID dynamic routing in a "params" key
  */
@@ -19,7 +20,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   const { id } = await params
 
   // Fetch Members entity with given ID
-  const db = new SupabaseDBClient()
+const db = new SupabaseDBClient()
   const member: Members | null = await db.getEntityById(TABLE_NAME, id) as Members
   if (member === null || member?.deleted_at !== null) {
     return Response.json({ error: `Member with ID '${id}' could not be found.` }, { status: HTTP_CODES.NOT_FOUND })
