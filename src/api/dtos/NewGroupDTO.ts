@@ -1,5 +1,3 @@
-import { isString } from '@/api/utils/validators'
-
 /**
  * DTO that can be used to create a Group.
  */
