@@ -100,5 +100,4 @@ interface ProcCreateNewMemberAndLinkToMemberGroups {
    */
   auth_user_id: string
 }
-
 export { PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, type ProcCreateNewMemberAndLinkToMemberGroups }
