@@ -6,7 +6,7 @@ import { type Members } from '@/entities/members'
  * The purpose of this stored procedure is for new users to create a Group (which by doing so will create a Member too).
  * 
  * @param {ProcCreateNewMemberAndGroup} ProcCreateNewMemberAndGroup
- * @returns {string} string: new Group ID created.
+ * @returns {ProcCreateNewMemberAndGroupQuery[]} ProcCreateNewMemberAndGroupQuery[]
  */
 const PROC_CREATE_NEW_MEMBER_AND_GROUP = 'create_new_member_and_group'
 
@@ -77,7 +77,7 @@ export { PROC_CREATE_NEW_MEMBER_AND_GROUP, type ProcCreateNewMemberAndGroupParam
  * Creates a new Member and then links them to an existing Group.
  * 
  * @param {ProcCreateNewMemberAndLinkToMemberGroups} ProcCreateNewMemberAndLinkToMemberGroups
- * @returns {Members[]} Member
+ * @returns {Members[]} Members[]
  */
 const PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS = 'create_new_member_and_link_to_members_groups'
 
