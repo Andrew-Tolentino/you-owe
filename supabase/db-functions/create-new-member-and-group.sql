@@ -1,4 +1,4 @@
--- Creates a new Member, Group, and MembersGroup entry.
+-- Creates a new Member, Group, and Members_Groups entry.
 -- Follows the necessary flow for creating a Group.
 CREATE OR REPLACE FUNCTION "public".create_new_member_and_group(
   member_name text,
@@ -20,10 +20,6 @@ CREATE OR REPLACE FUNCTION "public".create_new_member_and_group(
     INSERT INTO "public"."groups"("name", creator_member_id, "password")
     VALUES (group_name, new_member_id, group_password)
     RETURNING id into new_group_id;
-
-    -- 3. Create a new entry in MembersGroups
-    INSERT INTO "public"."members_groups"(member_id, group_id)
-    VALUES (new_member_id, new_group_id);
 
     RETURN new_group_id;
   END;

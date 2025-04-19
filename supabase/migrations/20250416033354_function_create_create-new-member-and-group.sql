@@ -1,4 +1,4 @@
--- Creates a new Member, Group, and MembersGroup entry.
+-- Creates a new Member, Group, and Members_Groups entry.
 -- Follows the necessary flow for creating a Group.
 CREATE OR REPLACE FUNCTION "public".create_new_member_and_group(
   member_name text,
