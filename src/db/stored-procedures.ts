@@ -13,36 +13,68 @@ const PROC_CREATE_NEW_MEMBER_AND_GROUP = 'create_new_member_and_group'
 /**
  * PROC_CREATE_NEW_MEMBER_AND_GROUP - Parameters
  */
-interface ProcCreateNewMemberAndGroup {
+interface ProcCreateNewMemberAndGroupParameters {
   /**
    * The name of the new Member the user will associated to.
    */
-  member_name: string
+  new_member_name: string
 
   /**
    * The name for the Group the user will create.
    */
-  group_name: string
+  new_group_name: string
 
   /**
    * Optional - The password the user wishes to set for the Group.
    * 
    */
-  group_password: string | null
+  new_group_password: string | null
 
   /**
    * The Supabase auth_id associated to the user.
    */
   auth_user_id: string
 }
-export { PROC_CREATE_NEW_MEMBER_AND_GROUP, type ProcCreateNewMemberAndGroup }
+
+interface ProcCreateNewMemberAndGroupQuery {
+  /**
+   * ID of the newly created Member.
+   */
+  member_id: string
+
+  /**
+   * Name of the newly created Member.
+   */
+  member_name: string
+
+  /**
+   * Date the Member was created.
+   */
+  member_created_at: Date
+
+  /**
+   * ID of the newly created Group.
+   */
+  group_id: string
+
+  /**
+   * Name of the newly created Group.
+   */
+  group_name: string
+
+  /**
+   * Date the Group was created.
+   */
+  group_created_at: Date
+}
+export { PROC_CREATE_NEW_MEMBER_AND_GROUP, type ProcCreateNewMemberAndGroupParameters, type ProcCreateNewMemberAndGroupQuery }
 
 
 /**
  * Creates a new Member and then links them to an existing Group.
  * 
  * @param {ProcCreateNewMemberAndLinkToMemberGroups} ProcCreateNewMemberAndLinkToMemberGroups
- * @returns {Members} Member
+ * @returns {Members[]} Member
  */
 const PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS = 'create_new_member_and_link_to_members_groups'
 

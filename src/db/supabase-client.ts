@@ -105,7 +105,9 @@ export class SupabaseDBClient implements DBClient {
       return null
     }
 
+
     if (data) {
+      Logger.info(`${LOGGER_PREFIX} invokeStoredProcedure: data ${JSON.stringify(data)}`)
       return data
     }
 
