@@ -1,4 +1,4 @@
-import { DBClient } from '@/db/db-client'
+import { type DBClient } from '@/db/db-client'
 import { type YouOweEntity } from '@/entities/entity'
 import { SUPABASE_CLIENT } from '@/api/clients/clients'
 import Logger from '@/api/utils/logger'

@@ -1,7 +1,7 @@
 import { type NewGroupDTO } from '@/api/dtos/NewGroupDTO'
 import { HTTP_CODES, ERROR_MESSAGE_FUNCTIONS, HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
 import Logger from '@/api/utils/logger'
-import { DBClient } from '@/db/db-client'
+import { type DBClient } from '@/db/db-client'
 import { SupabaseDBClient } from '@/db/supabase-client'
 import { type Members, TABLE_NAME as MembersTable } from '@/entities/members'
 import { type Groups, TABLE_NAME as GroupsTable } from '@/entities/groups'
