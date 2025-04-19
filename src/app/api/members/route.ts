@@ -1,10 +1,13 @@
-import { type NewMemberDTO, validateNewMemberDTO } from '@/api/dtos/NewMemberDTO'
-import { HTTP_CODES, HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
+import { type NewMemberDTO } from '@/api/dtos/NewMemberDTO'
+import { ERROR_MESSAGE_FUNCTIONS, HTTP_CODES, HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
 import { SUPABASE_CLIENT } from '@/api/clients/clients'
 import Logger from '@/api/utils/logger'
 import { DBClient } from '@/db/db-client'
 import { SupabaseDBClient } from '@/db/supabase-client'
-import { type Members, TABLE_NAME } from '@/entities/members'
+import { type Members } from '@/entities/members'
+import { type Groups, TABLE_NAME as GroupsTable } from '@/entities/groups'
+import { PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, ProcCreateNewMemberAndLinkToMemberGroups } from '@/db/stored-procedures'
+import { isString } from '@/api/utils/validators'
 
 const LOGGER_PREFIX = '[app/api/members/route]' 
 
@@ -28,8 +31,18 @@ export async function POST(request: Request) {
   if (validationError !== null) {
     return Response.json({ error: validationError }, { status: HTTP_CODES.BAD_REQUEST })
   }
+  if (!requestBody?.group_id || !isString(requestBody.group_id)) {
+    return Response.json({ error: "'group_id' field is invalid." }, { status: HTTP_CODES.BAD_REQUEST })
+  }
 
-  const newMemberDTO: NewMemberDTO = { name: requestBody!.name.trim() }
+  const newMemberDTO: NewMemberDTO = { name: requestBody!.name.trim(), group_id: requestBody!.group_id.trim() }
+
+  // Verify that the 'group_id' belongs to an active Group
+  const db: DBClient = new SupabaseDBClient()
+  const group: Groups | null = await db.getEntityById(GroupsTable, newMemberDTO.group_id as string) as Groups
+  if (group === null || group.deleted_at !== null) {
+    return Response.json({ error: ERROR_MESSAGE_FUNCTIONS.RESOURCE_WITH_ID_NOT_FOUND('Group', newMemberDTO.group_id as string) }, { status: HTTP_CODES.BAD_REQUEST })
+  }
 
   /**
    * Edge cases to think about in the future
@@ -45,14 +58,40 @@ export async function POST(request: Request) {
   }
 
   if (data.user) {
-    // Create new member row in DB
-    const db: DBClient = new SupabaseDBClient()
-    const partialMember: Partial<Members> = { name: newMemberDTO.name, auth_user_id: data.user.id }
-    const newMember = await db.createEntity(TABLE_NAME, partialMember)
-    if (newMember) {
-      return Response.json(newMember, { status: HTTP_CODES.CREATED })
+    // Create new Member and link them to the Group they wish to join
+    const procParams: ProcCreateNewMemberAndLinkToMemberGroups = {
+      member_name: newMemberDTO.name,
+      group_id: newMemberDTO.group_id as string,
+      auth_user_id: data.user.id
+    } 
+    const members = await db.invokeStoredProcedure(PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, procParams) as Members[]
+    if (members === null) {
+      return Response.json(HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR, { status: HTTP_CODES.INTERNAL_SERVER_ERROR })
     }
+
+    return Response.json(members[0], { status: HTTP_CODES.CREATED })
   }
   
   return Response.json(HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR, { status: HTTP_CODES.INTERNAL_SERVER_ERROR })
+}
+
+/**
+ * Validates an incoming NewMemberDTO checking if the request has fulfilled all
+ * checkmarks needed to create a Member.
+ * 
+ * @param {NewMemberDTO} DTO
+ * 
+ * @returns {string | null} Returns an error message string if there was an issue found in DTO. Else, returns null.
+ */
+function validateNewMemberDTO(DTO: NewMemberDTO): string | null {
+  const { name, group_id } = DTO
+  if (!isString(name)) {
+    return "'name' field is invalid."
+  }
+
+  if (!isString(group_id)) {
+    return "'group_id' field is invalid."
+  }
+
+  return null
 }

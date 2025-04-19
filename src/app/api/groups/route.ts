@@ -1,11 +1,11 @@
-import { type NewGroupDTO, validateNewGroupDTO } from '@/api/dtos/NewGroupDTO'
+import { type NewGroupDTO } from '@/api/dtos/NewGroupDTO'
 import { HTTP_CODES, ERROR_MESSAGE_FUNCTIONS, HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
 import Logger from '@/api/utils/logger'
 import { DBClient } from '@/db/db-client'
 import { SupabaseDBClient } from '@/db/supabase-client'
 import { type Members, TABLE_NAME as MembersTable } from '@/entities/members'
 import { type Groups, TABLE_NAME as GroupsTable } from '@/entities/groups'
-import { isString } from '@/api/utils/validators'
+import { isString, isValidGroupPassword } from '@/api/utils/validators'
 
 const LOGGER_PREFIX = '[app/api/groups/route]'
 
@@ -28,8 +28,6 @@ export async function POST(request: Request) {
   if (validationError !== null) {
     return Response.json({ error: validationError }, { status: HTTP_CODES.BAD_REQUEST })
   }
-
-  // Verify that the 'creator_member_id' is in the DTO
   if (!isString(requestBody?.creator_member_id ?? '')) {
     return Response.json({ error: "'creator_member_id' field is invalid." }, { status: HTTP_CODES.BAD_REQUEST })
   }
@@ -40,7 +38,7 @@ export async function POST(request: Request) {
     creator_member_id: requestBody!.creator_member_id?.trim()
   }
   
-  // Check if the 'creator_member_id' belongs to an active user
+  // Check if the 'creator_member_id' belongs to an active Member
   const db: DBClient = new SupabaseDBClient()
   const creatorMember: Members | null = await db.getEntityById(MembersTable, newGroupDTO.creator_member_id as string) as Members
   if (creatorMember === null || creatorMember.deleted_at !== null) {
@@ -55,4 +53,27 @@ export async function POST(request: Request) {
 
   // TODO: Redacting passsord this way for now... Think of better way in future (maybe do at DB level).
   return Response.json({ ...newGroup, password: null }, { status: HTTP_CODES.CREATED })
+}
+
+/**
+ * Validates an incoming NewGroupDTO checking if the request has fulfilled all
+ * checkmarks needed to create a Group.
+ * 
+ * @param {NewGroupDTO} DTO
+ * 
+ * @returns {string | null} Returns an error message string if there was an issue found in DTO. Else, returns null.
+ */
+export function validateNewGroupDTO(DTO: NewGroupDTO): string | null {
+  const { name, password } = DTO
+
+  if (!isString(name)) {
+    return "'name' field is invalid."
+  }
+
+  // Group can require a password to join
+  const groupPasswordErrorValidationMessage = isValidGroupPassword(password)
+  if (groupPasswordErrorValidationMessage !== null) {
+    return groupPasswordErrorValidationMessage
+  }
+  return null
 }

@@ -1,5 +1,3 @@
-import { isString } from '@/api/utils/validators'
-
 /**
  * DTO that can be use to create a new Member.
  */
@@ -8,23 +6,14 @@ interface NewMemberDTO {
    * The name of the new Member.
    */
   name: string
+
+  /**
+   * Optional - There are other ways of creating a Member where the Group ID is not needed (new user creating a Group for the first time).
+   * 
+   * ID of the Group the new Member will join.
+   * For now, every Member in the Database will be associated to a Group.
+   */
+  group_id?: string
 }
 
 export type { NewMemberDTO }
-
-/**
- * Validates an incoming NewMemberDTO checking if the request has fulfilled all
- * checkmarks needed to create a Member.
- * 
- * @param {NewMemberDTO} DTO
- * 
- * @returns {string | null} Returns an error message string if there was an issue found in DTO. Else, returns null.
- */
-export function validateNewMemberDTO(DTO: NewMemberDTO): string | null {
-  const { name } = DTO
-  if (!isString(name)) {
-    return "'name' field is invalid."
-  }
-
-  return null
-}

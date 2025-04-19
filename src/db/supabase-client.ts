@@ -96,21 +96,20 @@ export class SupabaseDBClient implements DBClient {
    * @param {string} procName - Name of the stored procedure to be executed. 
    * @param {object?} parameters - Object containing arguments that is needed for stored procedure.
    * 
-   * @returns {Promise<T | null>} Returns specified type T if successfull or null if stored procedure failed.
+   * @returns {Promise<object | null>} Returns object of proc returned values if successfull or null if stored procedure failed.
    */
-  async invokeStoredProcedure<T>(procName: string, parameters?: object): Promise<T | null> {
+  async invokeStoredProcedure(procName: string, parameters?: object): Promise<unknown | null> {
     const { data, error } = parameters ? await SUPABASE_CLIENT.rpc(procName, parameters) : await SUPABASE_CLIENT.rpc(procName)
     if (error) {
       Logger.error(`${LOGGER_PREFIX} invokeStoredProcedure: Error when calling stored procedure. Error code: "${error.code}" and message: "${error.message}".`)
       return null
     }
 
-    Logger.info(`${LOGGER_PREFIX} invokeStoredProcedure: data - ${JSON.stringify(data)}`)
-
     if (data) {
-      return data as T
+      return data
     }
 
+    Logger.error(`${LOGGER_PREFIX} invokeStoredProcedure: Did not return anything after completing.`)
     return null
   }
 
