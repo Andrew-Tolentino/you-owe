@@ -36,6 +36,9 @@ interface ProcCreateNewMemberAndGroupParameters {
   auth_user_id: string
 }
 
+/**
+ * PROC_CREATE_NEW_MEMBER_AND_GROUP - Returning query mapping
+ */
 interface ProcCreateNewMemberAndGroupQuery {
   /**
    * ID of the newly created Member.
