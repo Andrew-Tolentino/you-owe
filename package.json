@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mantine/core": "^7.17.4",
+    "@mantine/form": "^7.17.4",
+    "@mantine/hooks": "^7.17.4",
     "@supabase/supabase-js": "^2.49.4",
     "next": "15.2.4",
     "pino": "^9.6.0",
@@ -23,6 +26,9 @@
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
     "pino-pretty": "^13.0.0",
+    "postcss": "^8.5.3",
+    "postcss-preset-mantine": "^1.17.0",
+    "postcss-simple-vars": "^7.0.1",
     "typescript": "^5"
   }
 }

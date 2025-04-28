@@ -1,5 +1,7 @@
 import { type YouOweEntity } from '@/entities/entity'
 
+// Bear in blue house, mouse guy
+
 export const TABLE_NAME = 'groups'
 
 /**

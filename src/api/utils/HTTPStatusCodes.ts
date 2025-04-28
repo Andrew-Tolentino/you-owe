@@ -8,6 +8,9 @@ export const HTTP_CODES = {
 }
 
 export const HTTP_ERROR_MESSAGES = {
+  /**
+   * Error Message - "Looks like an error on our side. Sorry about that!"
+   */
   INTERNAL_SERVER_ERROR: 'Looks like an error on our side. Sorry about that!',
 }
 
