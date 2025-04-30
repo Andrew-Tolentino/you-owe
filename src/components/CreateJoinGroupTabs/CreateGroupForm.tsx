@@ -5,7 +5,7 @@ import { TextInput, Button, Center, Text, Stack } from '@mantine/core'
 import { useForm } from '@mantine/form'
 
 import { isString, isValidGroupPassword } from '@/api/utils/validators'
-import { createNewMemberAndGroup } from '@/app/actions/create-new-member-and-group-action'
+import { createNewMemberAndGroupServerAction } from '@/app/actions/create-new-member-and-group-server-action'
 import { type NewMemberDTO } from '@/api/dtos/NewMemberDTO'
 import { NewGroupDTO } from '@/api/dtos/NewGroupDTO'
 import { HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
@@ -77,10 +77,12 @@ export default function CreateGroupForm() {
     return null
   }
 
-  async function onSubmit(formData: typeof form.values): Promise<void> {
+  async function onSubmit(formData: typeof form.values) {
+    setServerErrorMessage('')
+    
     const newMemberDTO: NewMemberDTO = { name: formData.memberName }
     const newGroupDTO: NewGroupDTO = { name: formData.groupName, password: formData.groupPassword }
-    const serverActionResult = await createNewMemberAndGroup(newMemberDTO, newGroupDTO)
+    const serverActionResult = await createNewMemberAndGroupServerAction(newMemberDTO, newGroupDTO)
 
     if (!serverActionResult.success) {
       const errorMessage = serverActionResult.errorMessage ? serverActionResult.errorMessage : HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR

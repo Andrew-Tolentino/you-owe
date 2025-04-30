@@ -1,7 +1,7 @@
 /**
  * Server Action result type that can be used to pass information between server and client.
  */
-export interface ServerActionResults {
+export interface ServerActionResults<T> {
   /**
    * Whether the server action completed successfully or not.
    */
@@ -13,7 +13,12 @@ export interface ServerActionResults {
   errorMessage?: string
 
   /**
+   * Optional - HTTP Code representing the results of the action that can be used to send in a response.
+   */
+  httpCode?: number
+
+  /**
    * Optional - Can be used to send miscellaneous information back to the client.
    */
-  payload?: unknown
+  payload?: T
 }
