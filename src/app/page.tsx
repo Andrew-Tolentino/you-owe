@@ -2,6 +2,8 @@ import { Container } from '@mantine/core'
 import CreateJoinGroupTabs from '@/components/CreateJoinGroupTabs/CreateJoinGroupTabs'
 
 export default function Page() {
+  // TODO: Need to check if person entering the home page is a user already.
+  // If so, present them with a form to create a group that doesn't ask for their name.
   return (
     // TODO: Going to need to make the <Container> Responseive for mobile use - https://mantine.dev/core/container/#responsive-max-width
     <Container>

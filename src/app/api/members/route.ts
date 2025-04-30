@@ -1,6 +1,6 @@
 import { type NewMemberDTO } from '@/api/dtos/NewMemberDTO'
 import { ERROR_MESSAGE_FUNCTIONS, HTTP_CODES, HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
-import { SUPABASE_CLIENT } from '@/api/clients/clients'
+import { supabaseCreateServerClient } from '@/api/clients/supabase/supabase-server-client'
 import Logger from '@/utils/logger'
 import { type DBClient } from '@/db/db-client'
 import { SupabaseDBClient } from '@/db/supabase-client'
@@ -51,7 +51,8 @@ export async function POST(request: Request) {
    */
 
   // Create anonymous user
-  const { data, error } = await SUPABASE_CLIENT.auth.signInAnonymously()
+  const supabaseClient = await supabaseCreateServerClient()
+  const { data, error } = await supabaseClient.auth.signInAnonymously()
   if (error !== null) {
     Logger.error(`${LOGGER_PREFIX} POST: Error when creating an anonymous user. Error code: ${error.code} and message: ${error.message}`)
     return Response.json(HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR, { status: HTTP_CODES.INTERNAL_SERVER_ERROR })
