@@ -7,7 +7,7 @@ export const TABLE_NAME = 'groups'
 /**
  * Mapping of the "groups" table in the Database.
  */
-interface Groups extends YouOweEntity {
+interface Group extends YouOweEntity {
   /**
    * Name of the Group.
    */
@@ -46,4 +46,4 @@ interface Groups extends YouOweEntity {
   is_closed: boolean
 }
 
-export type { Groups }
+export type { Group }

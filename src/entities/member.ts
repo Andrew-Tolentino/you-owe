@@ -5,7 +5,7 @@ export const TABLE_NAME = 'members'
 /**
  * Mapping  of the "members" table in the Database.
  */
-interface Members extends YouOweEntity {
+interface Member extends YouOweEntity {
   /**
    * Name of the Member.
    */
@@ -27,4 +27,4 @@ interface Members extends YouOweEntity {
   auth_user_id: string
 }
 
-export type { Members }
+export type { Member }

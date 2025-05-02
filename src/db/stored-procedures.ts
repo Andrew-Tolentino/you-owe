@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { type Members } from '@/entities/members'
+import { type Member } from '@/entities/member'
 
 /**
  * Creates a new Member and then a new Group with that Member as the Group's creator.

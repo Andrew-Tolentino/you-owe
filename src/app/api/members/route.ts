@@ -4,8 +4,8 @@ import { supabaseCreateServerClient } from '@/api/clients/supabase/supabase-serv
 import Logger from '@/utils/logger'
 import { type DBClient } from '@/db/db-client'
 import { SupabaseDBClient } from '@/db/supabase-client'
-import { type Members } from '@/entities/members'
-import { type Groups, TABLE_NAME as GroupsTable } from '@/entities/groups'
+import { type Member } from '@/entities/member'
+import { type Group, TABLE_NAME as GroupsTable } from '@/entities/groups'
 import { PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, ProcCreateNewMemberAndLinkToMemberGroups } from '@/db/stored-procedures'
 import { isString } from '@/api/utils/validators'
 
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
 
   // Verify that the 'group_id' belongs to an active Group
   const db: DBClient = new SupabaseDBClient()
-  const group: Groups | null = await db.getEntityById(GroupsTable, newMemberDTO.group_id as string) as Groups
+  const group: Group | null = await db.getEntityById(GroupsTable, newMemberDTO.group_id as string) as Group
   if (group === null || group.deleted_at !== null) {
     return Response.json({ error: ERROR_MESSAGE_FUNCTIONS.RESOURCE_WITH_ID_NOT_FOUND('Group', newMemberDTO.group_id as string) }, { status: HTTP_CODES.BAD_REQUEST })
   }
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
       group_id: newMemberDTO.group_id as string,
       auth_user_id: data.user.id
     } 
-    const members = await db.invokeStoredProcedure(PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, procParams) as Members[]
+    const members = await db.invokeStoredProcedure(PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, procParams) as Member[]
     if (members === null) {
       return Response.json(HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR, { status: HTTP_CODES.INTERNAL_SERVER_ERROR })
     }

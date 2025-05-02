@@ -1,6 +1,6 @@
 import { HTTP_CODES } from '@/api/utils/HTTPStatusCodes'
 import { SupabaseDBClient } from '@/db/supabase-client'
-import { type Members, TABLE_NAME } from '@/entities/members'
+import { type Members, TABLE_NAME } from '@/entities/member'
 
 /**
  * HTTP GET method to retrieve a Member a Member ID. 

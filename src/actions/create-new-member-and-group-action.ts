@@ -8,8 +8,8 @@ import { PROC_CREATE_NEW_MEMBER_AND_GROUP, type ProcCreateNewMemberAndGroupParam
 import { SupabaseDBClient } from '@/db/supabase-client'
 import { type ServerActionResults } from '@/actions/return-types'
 import { HTTP_CODES, HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
-import { type Groups } from '@/entities/groups'
-import { type Members } from '@/entities/members'
+import { type Group } from '@/entities/groups'
+import { type Member } from '@/entities/member'
 
 const LOGGER_PREFIX = '[actions/create-new-member-and-group-action]'
 
@@ -17,8 +17,8 @@ const LOGGER_PREFIX = '[actions/create-new-member-and-group-action]'
  * Payload returned after successfully calling the "createNewMemberAndGroupAction" action.
  */
 export interface CreateNewMemberAndGroupActionPayload {
-  member: Partial<Members>
-  group: Partial<Groups>
+  member: Partial<Member>
+  group: Partial<Group>
 }
 
 /**
@@ -59,8 +59,8 @@ export async function createNewMemberAndGroupAction(newMemberDTO: NewMemberDTO, 
     const resultQueryArr = await db.invokeStoredProcedure(PROC_CREATE_NEW_MEMBER_AND_GROUP, procParams) as ProcCreateNewMemberAndGroupQuery[]
     if (resultQueryArr !== null) {
       const resultQuery = resultQueryArr[0]
-      const newMember: Partial<Members> = { id: resultQuery.member_id, name: resultQuery.member_name, created_at: resultQuery.member_created_at}
-      const newGroup: Partial<Groups> = { id: resultQuery.group_id, name: resultQuery.group_name, created_at: resultQuery.group_created_at, creator_member_id: resultQuery.member_id }
+      const newMember: Partial<Member> = { id: resultQuery.member_id, name: resultQuery.member_name, created_at: resultQuery.member_created_at}
+      const newGroup: Partial<Group> = { id: resultQuery.group_id, name: resultQuery.group_name, created_at: resultQuery.group_created_at, creator_member_id: resultQuery.member_id }
 
       return { success: true, httpCode: HTTP_CODES.CREATED, payload: { member: newMember, group: newGroup } }
     }
