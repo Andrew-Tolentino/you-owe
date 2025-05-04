@@ -6,10 +6,11 @@ import { useForm } from '@mantine/form'
 
 import { isString, isValidGroupPassword } from '@/api/utils/validators'
 import { createNewMemberAndGroupServerAction } from '@/app/actions/create-new-member-and-group-server-action'
+import { createNewGroupServerAction } from '@/app/actions/create-new-group-server-action'
 import { type NewMemberDTO } from '@/api/dtos/NewMemberDTO'
-import { NewGroupDTO } from '@/api/dtos/NewGroupDTO'
+import { type NewGroupDTO } from '@/api/dtos/NewGroupDTO'
 import { HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
-
+import { type Member } from '@/entities/member'
 
 interface SubmitButtonProps {
   /**
@@ -34,8 +35,16 @@ function SubmitButton({ isLoading, errorMessage='' }: SubmitButtonProps) {
   )
 }
 
-export default function CreateGroupForm() {
+interface CreateGroupFormProps {
+  /**
+   * Member entity populated if an authenticated user is viewing the <CreateGroupForm />.
+   */
+  member?: Member | null
+}
+
+export default function CreateGroupForm({ member }: CreateGroupFormProps) {
   const [serverErrorMessage, setServerErrorMessage] = useState('')
+
   const form = useForm({
     mode: 'uncontrolled',
     initialValues: {
@@ -43,7 +52,6 @@ export default function CreateGroupForm() {
       groupName: '',
       groupPassword: ''
     },
-
     validate: {
       memberName: validateMemberNameField,
       groupName: validateGroupNameField,
@@ -52,7 +60,9 @@ export default function CreateGroupForm() {
   })
 
   function validateMemberNameField(val: string): string | null {
-    if (!isString(val)) {
+    // If there is a Member loaded in, then this field is optional.
+    // Since there will be no need to create a new Member entity.
+    if (!member && !isString(val)) {
       return "Invalid 'Name'."
     }
 
@@ -82,7 +92,7 @@ export default function CreateGroupForm() {
     
     const newMemberDTO: NewMemberDTO = { name: formData.memberName }
     const newGroupDTO: NewGroupDTO = { name: formData.groupName, password: formData.groupPassword }
-    const serverActionResult = await createNewMemberAndGroupServerAction(newMemberDTO, newGroupDTO)
+    const serverActionResult = member ? await createNewGroupServerAction({ ...newGroupDTO, creator_member_id: member.id }) : await createNewMemberAndGroupServerAction(newMemberDTO, newGroupDTO)
 
     if (!serverActionResult.success) {
       const errorMessage = serverActionResult.errorMessage ? serverActionResult.errorMessage : HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR
@@ -92,12 +102,16 @@ export default function CreateGroupForm() {
    
   return (
     <form onSubmit={form.onSubmit(onSubmit)}>
-      <TextInput
-        label="Name"
-        placeholder="Andrew"
-        key={form.key('memberName')}
-        {...form.getInputProps('memberName')}
-      />
+      {!member ? 
+        <TextInput
+          label="Name"
+          placeholder="Andrew"
+          key={form.key('memberName')}
+          {...form.getInputProps('memberName')}
+        /> 
+        : 
+        <h2>{member.name}</h2>
+      }
 
       <TextInput
         label="Group Name"

@@ -1,0 +1,64 @@
+import { FilterOperator, type DBClient, type DBFilterMap } from '@/db/db-client'
+import { SupabaseDBClient } from '@/db/supabase-client'
+import { type Group, TABLE_NAME as GroupsTable } from '@/entities/groups'
+import { type Member, TABLE_NAME as MembersTable } from '@/entities/member'
+import { MEMBERS_GROUPS_JOIN_TABLE as MembersGroupsJoinTable } from '@/entities/join-entities-constants'
+
+/** Model representing the Member entity that can be use for business logic related to Members. */
+export class Members {
+  private _dbClient: DBClient
+
+  constructor() {
+    this._dbClient = new SupabaseDBClient()
+  }
+
+  /**
+   * Fetches a Member given its authUserId.
+   * 
+   * @param {string} authUserId 
+   * @returns {Promise<Member | null>} Returns Member if found, else null
+   */
+  async fetchMemberByAuthUserId(authUserId: string): Promise<Member | null> {
+    return await this._dbClient.getEntityByAuthUserId(MembersTable, authUserId) as Member
+  }
+
+  /**
+   * Fetches a Member given its id.
+   * 
+   * @param {string} id
+   * @returns {Promise<Member | null>} Returns Member if found, else null
+   */
+  async fetchMemberById(id: string): Promise<Member | null> {
+    return await this._dbClient.getEntityById(MembersTable, id) as Member
+  }
+
+  /**
+   * Fetches a Member and the Groups the Member is linked to. Returns null if it is not able to find a Member.
+   * 
+   * @param {string} authUserId 
+   * @returns {Promise<{ member: Member, groups: Group[] } | null>}
+   */
+  async fetchMemberAndGroups(authUserId: string): Promise<{ member: Member, groups: Group[] } | null> {
+    const dbFilter: DBFilterMap[] = [ { column: 'auth_user_id', value: authUserId, operator: FilterOperator.EQUALS }]
+    const membersAndGroups = await this._dbClient.getOneToManyEntities<Member, Group>(MembersTable, GroupsTable, MembersGroupsJoinTable, dbFilter) 
+    if (membersAndGroups === null) { 
+      return null
+    }
+
+    // "rawMember" has all the fields of a Member entity plus some other things, so will only return Member related fields
+    const rawMember = membersAndGroups[MembersTable] as Member
+    const member: Member = {
+      id: rawMember.id,
+      name: rawMember.name,
+      created_at: rawMember.created_at,
+      deleted_at: rawMember.deleted_at,
+      auth_user_id: authUserId
+    }
+    const rawGroup = membersAndGroups[GroupsTable] as Group[]
+
+    return {
+      member,
+      groups: rawGroup.map((val) => ({ ...val, password: null })) // Redact password
+    }
+  }
+}

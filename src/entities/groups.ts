@@ -2,6 +2,7 @@ import { type YouOweEntity } from '@/entities/entity'
 
 // Bear in blue house, mouse guy
 
+/** Table name corresponding to the Groups entity */
 export const TABLE_NAME = 'groups'
 
 /**

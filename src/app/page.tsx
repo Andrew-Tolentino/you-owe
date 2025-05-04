@@ -1,15 +1,59 @@
-import { Container } from '@mantine/core'
-import CreateJoinGroupTabs from '@/components/CreateJoinGroupTabs/CreateJoinGroupTabs'
+import { Container, Tabs, TabsList, TabsTab, TabsPanel } from '@mantine/core'
 
-export default function Page() {
+import CreateGroupForm from '@/components/CreateJoinGroupTabs/CreateGroupForm'
+import { supabaseCreateServerClient } from '@/api/clients/supabase/supabase-server-client'
+import { Members } from '@/models/Members'
+import { type Member } from '@/entities/member'
+import { type Group } from '@/entities/groups'
+import DisplayGroupsGrid from '@/components/DisplayGroupsGrid'
+
+export default async function Page() {
   // TODO: Need to check if person entering the home page is a user already.
+  const supabaseClient = await supabaseCreateServerClient()
+  const { data: { user } } = await supabaseClient.auth.getUser()
+  let member: Member | null = null
+  let groups: Group[] = []
+
+  if (user) {
+    const members = new Members()
+    const memberAndGroups = await members.fetchMemberAndGroups(user.id)
+
+    // "memberAndGroups" should not be null
+    if (memberAndGroups !== null) {
+      member = memberAndGroups.member
+      groups = memberAndGroups.groups
+    }
+  }
+
+
   // If so, present them with a form to create a group that doesn't ask for their name.
   return (
     // TODO: Going to need to make the <Container> Responseive for mobile use - https://mantine.dev/core/container/#responsive-max-width
     <Container>
       <h1>You Owe</h1>
+      <Container>
+        <Tabs color='red' defaultValue="create-group">
+          <TabsList>
+            <TabsTab value="create-group">
+              Create a Group
+            </TabsTab>
+            <TabsTab value="join-group">
+              Join a Group
+            </TabsTab>          
+          </TabsList>
 
-      <CreateJoinGroupTabs />
+          <TabsPanel value="create-group">
+            <CreateGroupForm member={member} />
+          </TabsPanel>
+          <TabsPanel value="join-group">
+            Join a Group Form
+          </TabsPanel>
+        </Tabs>             
+      </Container>
+
+      <Container>
+        <DisplayGroupsGrid groups={groups} />
+      </Container>
       
       <h2>What is it?</h2>
       <p>

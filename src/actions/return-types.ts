@@ -1,7 +1,7 @@
 /**
  * Server Action result type that can be used to pass information between server and client.
  */
-export interface ServerActionResults<T> {
+interface ServerActionResults<T> {
   /**
    * Whether the server action completed successfully or not.
    */
@@ -22,3 +22,5 @@ export interface ServerActionResults<T> {
    */
   payload?: T
 }
+
+export { type ServerActionResults }

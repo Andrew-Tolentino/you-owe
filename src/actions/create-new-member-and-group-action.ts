@@ -16,10 +16,11 @@ const LOGGER_PREFIX = '[actions/create-new-member-and-group-action]'
 /**
  * Payload returned after successfully calling the "createNewMemberAndGroupAction" action.
  */
-export interface CreateNewMemberAndGroupActionPayload {
+interface CreateNewMemberAndGroupActionPayload {
   member: Partial<Member>
   group: Partial<Group>
 }
+export { type CreateNewMemberAndGroupActionPayload }
 
 /**
  * Does the following:

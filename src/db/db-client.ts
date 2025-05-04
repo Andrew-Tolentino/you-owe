@@ -8,6 +8,19 @@ interface DBClient {
   deleteEntityById(tableName: string, id: string): Promise<boolean>
   invokeStoredProcedure(procName: string, parameters?: object): Promise<unknown | null>
   invokeStoredProcedureVoid(procName: string, parameters?: object): Promise<boolean>
+  getOneToManyEntities<T extends YouOweEntity, U extends YouOweEntity>(singleRelationTableName: string, manyRelationTableName: string, joinTableName: string, dbFilters: DBFilterMap[]): Promise<{ [key: string]: T | U[]} | null>
 }
 
-export { type DBClient }
+/** Mapping used to help apply filters to DB queries */
+interface DBFilterMap {
+  column: string
+  value: unknown
+  operator: FilterOperator
+}
+
+/** ENUM that can be use to identify what kind of DB filter is being used to make a query */
+enum FilterOperator {
+  EQUALS
+}
+
+export { type DBClient, type DBFilterMap, FilterOperator }

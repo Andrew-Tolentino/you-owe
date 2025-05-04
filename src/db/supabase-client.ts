@@ -1,11 +1,18 @@
-import { type DBClient } from '@/db/db-client'
+import { DBFilterMap, FilterOperator, type DBClient } from '@/db/db-client'
 import { type YouOweEntity } from '@/entities/entity'
 import { supabaseCreateServerClient } from '@/api/clients/supabase/supabase-server-client'
 import Logger from '@/utils/logger'
+import { SupabaseClient } from '@supabase/supabase-js'
 
-const LOGGER_PREFIX = '[db/supabase-client]' 
+const LOGGER_PREFIX = '[db/supabase-client]'
+
+/** Mapping to help typecast Supabase resultant queries for one:many relationships */
+type OneToManySupabaseMapping<T,U> =  T & {
+  [key: string]: { [key]: U }[]
+}
 
 export class SupabaseDBClient implements DBClient {
+  private _supabaseClient: SupabaseClient | null = null
   /**
    * Uses the Supabase client to get a row from a table given a unique ID.
    * 
@@ -13,8 +20,20 @@ export class SupabaseDBClient implements DBClient {
    * @param {string} id - Unique ID associated to the row 
    * @returns {Promise<YouOweEntity | null>} - The row found in the table. If nothing is found, returns null.
    */
+
+  /**
+   * Initializes the supabase client if it has not been set already
+   */
+  private async getSupabaseClient(): Promise<SupabaseClient> {
+    if (this._supabaseClient === null) {
+      this._supabaseClient = await supabaseCreateServerClient()
+    }
+
+    return this._supabaseClient
+  }
+
   async getEntityById(tableName: string, id: string): Promise<YouOweEntity | null> {
-    const supabaseClient = await supabaseCreateServerClient()
+    const supabaseClient = await this.getSupabaseClient()
     const { data, error } = await supabaseClient.from(tableName).select().eq('id', id)
 
     if (error) {
@@ -38,7 +57,7 @@ export class SupabaseDBClient implements DBClient {
    * @returns {Promise<YouOweEntity | null>} - The row found in the table. If nothing is found, returns null.
    */
   async getEntityByAuthUserId(tableName: string, authUserId: string): Promise<YouOweEntity | null> {
-    const supabaseClient = await supabaseCreateServerClient()
+    const supabaseClient = await this.getSupabaseClient()
     const { data, error } = await supabaseClient.from(tableName).select().eq('auth_user_id', authUserId)
 
     if (error) {
@@ -63,7 +82,7 @@ export class SupabaseDBClient implements DBClient {
    * @returns {Promise<YouOweEntity | null>} - If successful, returns the entity created. Else, returns null.
    */
   async createEntity(tableName: string, entity: Partial<YouOweEntity>): Promise<YouOweEntity | null> {
-    const supabaseClient = await supabaseCreateServerClient()
+    const supabaseClient = await this.getSupabaseClient()
     const { data, error, status, statusText } =  await supabaseClient.from(tableName).insert(entity).select()
 
     if (error) {
@@ -82,7 +101,7 @@ export class SupabaseDBClient implements DBClient {
    * @returns {Promise<boolean>} whether or not we were able to soft delete the row.
    */
   async deleteEntityById(tableName: string, id: string): Promise<boolean> {
-    const supabaseClient = await supabaseCreateServerClient()
+    const supabaseClient = await this.getSupabaseClient()
     const date = new Date(Date.now())
     const { error } = await supabaseClient.from(tableName).update({ 'deleted_at':  date.toISOString() }).eq('id', id)
 
@@ -103,7 +122,7 @@ export class SupabaseDBClient implements DBClient {
    * @returns {Promise<object | null>} Returns object of proc returned values if successfull or null if stored procedure failed.
    */
   async invokeStoredProcedure(procName: string, parameters?: object): Promise<unknown | null> {
-    const supabaseClient = await supabaseCreateServerClient()
+    const supabaseClient = await this.getSupabaseClient()
     const { data, error } = parameters ? await supabaseClient.rpc(procName, parameters) : await supabaseClient.rpc(procName)
     if (error) {
       Logger.error(`${LOGGER_PREFIX} invokeStoredProcedure: Error when calling stored procedure. Error code: "${error.code}" and message: "${error.message}".`)
@@ -129,7 +148,7 @@ export class SupabaseDBClient implements DBClient {
    * @returns {Promise<boolean>} Returns true if stored procedure executed successfully, else false.
    */
   async invokeStoredProcedureVoid(procName: string, parameters?: object): Promise<boolean> {
-    const supabaseClient = await supabaseCreateServerClient()
+    const supabaseClient = await this.getSupabaseClient()
     const { data, error } = parameters ? await supabaseClient.rpc(procName, parameters) : await supabaseClient.rpc(procName)
     if (error) {
       Logger.error(`${LOGGER_PREFIX} invokeStoredProcedureVoid: Error when calling stored procedure. Error code: "${error.code}" and message: "${error.message}".`)
@@ -142,5 +161,49 @@ export class SupabaseDBClient implements DBClient {
     }
 
     return true
+  }
+
+  /**
+   * Uses the Supabase client to get a one:many query result. 
+   * 
+   * @param {string} singleRelationTableName - Table name that has the one mapping
+   * @param {string} manyRelationTableName - Table name that 
+   * @param {string} joinTableName - Join Table name used for the one:many mapping
+   * @param {DBFilterMap[]} dbFilters - Filters (equal/greater than/etc) that can be applied to the query
+   */
+  async getOneToManyEntities<T extends YouOweEntity, U extends YouOweEntity>(singleRelationTableName: string, manyRelationTableName: string, joinTableName: string, dbFilters: DBFilterMap[] = []): Promise<{ [key: string]: T | U[] } | null> {
+    const supabaseClient = await this.getSupabaseClient()
+    const queryString = 
+    `
+    *,
+    ${joinTableName} (
+      ${manyRelationTableName} ( * )
+    )
+    `
+    const query = supabaseClient.from(singleRelationTableName).select(queryString)
+    dbFilters.forEach((val) => {
+      const { column, value, operator } = val
+      if (operator === FilterOperator.EQUALS) {
+        query.eq(column, value)
+      }
+    })
+    query.single()
+
+    const { data, error } =  await query
+    if (error) {
+      Logger.error(`${LOGGER_PREFIX} getOneToManyEntities: Error when querying with the following tables - ${singleRelationTableName}, ${manyRelationTableName}, and ${joinTableName}. Filters being applied - ${JSON.stringify(dbFilters)}. Error code: ${error.code} and message ${error.message}.`)
+      return null
+    }
+
+    if (!data) {
+      Logger.info(`${LOGGER_PREFIX} getOneToManyEntities: No one:many data found for the following tables - ${singleRelationTableName}, ${manyRelationTableName}, and ${joinTableName}. Filters being applied - ${JSON.stringify(dbFilters)}.`)
+      return null
+    }
+
+    const transformedData = data as unknown as OneToManySupabaseMapping<T, U>
+    return {
+      [singleRelationTableName]: transformedData,
+      [manyRelationTableName]: transformedData[joinTableName].map((val) => val[manyRelationTableName])
+    }
   }
 }
