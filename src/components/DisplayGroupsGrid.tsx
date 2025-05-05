@@ -53,7 +53,7 @@ export default function DisplayGroupsGrid({ groups }: DisplayGroupsProps) {
           <Center>
             {/** TODO: Need to update this to use a <Link> tag instead, does not need ot be a button */}
             <Button
-              color="blue"
+              color="black"
               mt="md"
               radius="lg"
               w="80%"

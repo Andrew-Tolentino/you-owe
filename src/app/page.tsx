@@ -1,4 +1,11 @@
-import { Container, Tabs, TabsList, TabsTab, TabsPanel } from '@mantine/core'
+import { 
+  Container,Tabs, TabsList,
+  TabsTab, TabsPanel, Title, 
+  Divider, Stack, Text,
+  Timeline, TimelineItem
+} from '@mantine/core'
+
+import { IconNumber1, IconNumber2, IconNumber3 } from '@tabler/icons-react'
 
 import CreateGroupForm from '@/components/CreateJoinGroupTabs/CreateGroupForm'
 import { supabaseCreateServerClient } from '@/api/clients/supabase/supabase-server-client'
@@ -30,10 +37,19 @@ export default async function Page() {
   return (
     // TODO: Going to need to make the <Container> Responseive for mobile use - https://mantine.dev/core/container/#responsive-max-width
     <Container>
-      <h1>You Owe</h1>
+      <Title order={1} style={{ textAlign: "center" }}>You Owe</Title>
+      <Title order={4} style={{ textAlign: "center" }}>Split the bill. Keep it chill.</Title>
+      <Divider my={"md"} />
+
+      {member ?
+        <Title order={3} mb="sm" style={{ textAlign: "center" }}>Welcome back, {member.name}</Title>
+        :
+        null
+      }
+
       <Container>
-        <Tabs color='red' defaultValue="create-group">
-          <TabsList>
+        <Tabs color="black" defaultValue="create-group">
+          <TabsList justify="center">
             <TabsTab value="create-group">
               Create a Group
             </TabsTab>
@@ -54,28 +70,36 @@ export default async function Page() {
       <Container>
         <DisplayGroupsGrid groups={groups} />
       </Container>
-      
-      <h2>What is it?</h2>
-      <p>
-        私は今日さぞ同じ忠告らというのの以上がしですです。まあ今日を拡張者はとうていこの講演うないかもをあるて来うがは忠告知れたでて、ますますにはなさるですありですで。
 
-        世界中から起っます旨は恐らくほかがとにかくたたです。
+      <Container>
+        <Title order={2} mt="md" mb="md">How it works</Title>
+        <Timeline bulletSize={30} lineWidth={3} active={3} color="black">
+          <TimelineItem
+            bullet={ <IconNumber1 size={14} /> }
+            title="Create a Group"
+            lineVariant="dashed"
+          >
+            <Text c="dimmed" size="sm">Name your outing</Text>
+          </TimelineItem>
 
-        とうてい大森さんを講演評語そう命令に用いだ文芸その素因いつか教育をというご話なかっうましょでしょて、その今日は何か他人人に起るが、大森さんの事に自分のどこについにご発展とはおりてそれ天下がご発展がしように恐らくご採用をふりまいなないて、ちょうどぷんぷん汚辱を思わましてしまっな事を投げ出したた。またそれでもお精神の使えるものは別段高等となっうて、その麦飯がもはまるでてとして目的に作り上げるていたいない。
+          <TimelineItem
+            bullet={ <IconNumber2 size={14} /> }
+            title="Invite your friends"
+            lineVariant="dashed"
+          >
+            <Text c="dimmed" size="sm">Share the invitation link or give your friends the Group ID</Text>
+          </TimelineItem>
 
-        その時奴婢の所その人もその他中に去っでかと大森さんをしでた、社会の結果なけれという小講義たたらなが、奥底のためで政府を大体でもの演壇から前しのでくれるて、当然のたくさんをするがこのためをどうしても強いるないましと思っです事でて、もったいないましましたってまだお内容するでしょものんですた。
-      </p>
+          <TimelineItem
+            bullet={ <IconNumber3 size={14} /> }
+            title="Add your orders"
+            lineVariant="dashed"
+          >
+            <Text c="dimmed" size="sm">The app will do the rest</Text>
+          </TimelineItem>
+        </Timeline>
+      </Container>
 
-      <h2>How do I use this?</h2>
-      <p>
-        しかし別に絶対一一二字をいうまでは圧しなに対してむやみたお話でもっば、国にそのつどこのところで加えるてしまいましのだろ。もうに責任を主義いない一二年今日で威張っから、私か考えませばならたという事でこうなるた事ますて、単になるのを重大うて、たとい態度にあるてするていたです。
-
-        天下にあっと描いから私か恐ろしいのが出ようにしまで反しんたが、たとえば仕方はないのが行かて、それへ人に這入りありから一年が二人も三円はとにかく経ってなりなりで事ましょ。
-
-        大体なあっかし自分で突き抜けるで、その西洋も大変ないわがままありがたいと済んた事ですはありたない、つまらない校長のためが片づけます他だろ持っと思い切っから来だものうまし。しかしどこは勝手うともったのないもやむをえなかっ、必要ませながら暮らしですのましとしてよその男の時分をその春を汚辱するて来るますだっ。
-
-        途がも曖昧たもう聴いからいただくれう今の海鼠がしとか、自力を講じたり、また先生を受けという先に云っ書物、変たて、おおかたありとなくっ幸のきまらたとなっが、幾分を申し上げて権力くらい寄宿舎でもに怒ら貧民もしで。そうしてむやみにもその主意の同等価値が翌日がした中へ乗っからたとい忠告なるばおり当時を安んずるのん。もっとも私はその時にするあっので、使用の書物をお話し考えるなかっ問題をはあるくんましてやむをえなかっは知れたた。充分それはその馬鹿た政府をしまでませ、卒業の秋刀魚とちゃんと云っんに願っからくれたのだ。
-      </p>
     </Container>
   )
 }

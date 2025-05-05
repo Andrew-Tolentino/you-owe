@@ -27,7 +27,7 @@ interface SubmitButtonProps {
 function SubmitButton({ isLoading, errorMessage='' }: SubmitButtonProps) {
   return (
     <Stack gap="xs">
-      <Button mt="md" type="submit" loading={isLoading}>
+      <Button mt="md" type="submit" loading={isLoading} color="black">
         Create Group
       </Button>
       <Text c="red">{errorMessage}</Text>
@@ -97,6 +97,8 @@ export default function CreateGroupForm({ member }: CreateGroupFormProps) {
     if (!serverActionResult.success) {
       const errorMessage = serverActionResult.errorMessage ? serverActionResult.errorMessage : HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR
       setServerErrorMessage(errorMessage)
+    } else {
+      form.reset()
     }
   }
    
@@ -104,16 +106,18 @@ export default function CreateGroupForm({ member }: CreateGroupFormProps) {
     <form onSubmit={form.onSubmit(onSubmit)}>
       {!member ? 
         <TextInput
+          size="md"
           label="Name"
           placeholder="Your name"
           key={form.key('memberName')}
           {...form.getInputProps('memberName')}
         /> 
         : 
-        <h2>{member.name}</h2>
+        null
       }
 
       <TextInput
+        size="md"
         label="Group Name"
         placeholder="Bar Louis's Night Out"
         key={form.key('groupName')}
@@ -121,8 +125,9 @@ export default function CreateGroupForm({ member }: CreateGroupFormProps) {
       />
 
       <TextInput
+        size="md"
         label="Group Password"
-        placeholder="Secret Password to join"
+        placeholder="Optional password to join"
         key={form.key('groupPassword')}
         {...form.getInputProps('groupPassword')}
       />

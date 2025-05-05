@@ -27,7 +27,7 @@ interface SubmitButtonProps {
 function SubmitButton({ isLoading, errorMessage='' }: SubmitButtonProps) {
   return (
     <Stack gap="xs">
-      <Button mt="md" type="submit" loading={isLoading}>
+      <Button mt="md" type="submit" loading={isLoading} color="black">
         Join Group
       </Button>
       <Text c="red">{errorMessage}</Text>
@@ -90,10 +90,12 @@ export default function JoinGroupForm({ member }: JoinGroupFormProps) {
   async function onSubmit(formData: typeof form.values) {
     setServerErrorMessage('')
     const dto = member ? { member_id: member.id, group_id: formData.groupId, group_password: formData.groupPassword } as JoinGroupDTO : { name: formData.memberName, group_id: formData.groupId, group_password: formData.groupPassword } as NewMemberDTO
-    const serverActionResult = member ? await await memberJoinGroupServerAction(dto as JoinGroupDTO) : await createNewMemberAndJoinGroupServerAction(dto as NewMemberDTO) 
+    const serverActionResult = member ? await memberJoinGroupServerAction(dto as JoinGroupDTO) : await createNewMemberAndJoinGroupServerAction(dto as NewMemberDTO) 
     if (!serverActionResult.success) {
       const errorMessage = serverActionResult.errorMessage ? serverActionResult.errorMessage : HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR
       setServerErrorMessage(errorMessage)
+    } else {
+      form.reset()
     }
   }
 
@@ -101,16 +103,18 @@ export default function JoinGroupForm({ member }: JoinGroupFormProps) {
     <form onSubmit={form.onSubmit(onSubmit)}>
       {!member ? 
         <TextInput
+          size="md"
           label="Name"
           placeholder="Your name"
           key={form.key('memberName')}
           {...form.getInputProps('memberName')}
         /> 
         : 
-        <h2>{member.name}</h2>
+        null
       }
 
       <TextInput
+        size="md"
         label="Group ID"
         placeholder="ID linked to the group"
         key={form.key('groupId')}
@@ -118,6 +122,7 @@ export default function JoinGroupForm({ member }: JoinGroupFormProps) {
       />
 
       <TextInput
+        size="md"
         label="Group Password"
         placeholder="Required if the group has one"
         key={form.key('groupPassword')}

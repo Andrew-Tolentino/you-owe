@@ -70,10 +70,11 @@ export class Members {
   }
 
   /**
-   * Fetches a Member and the Groups the Member is linked to. Returns null if it is not able to find a Member.
+   * Fetches a Member and the Groups the Member is linked to.
    * 
-   * @param {string} authUserId 
-   * @returns {Promise<{ member: Member, groups: Group[] } | null>}
+   * @param {string} authUserId - Auth User ID of the Member
+   * 
+   * @returns {Promise<{ member: Member, groups: Group[] } | null>} The Member and the Groups its associated to, returns null if nothing found
    */
   async fetchMemberAndGroups(authUserId: string): Promise<{ member: Member, groups: Group[] } | null> {
     const dbFilter: DBFilterMap[] = [ { column: 'auth_user_id', value: authUserId, operator: FilterOperator.EQUALS }]
