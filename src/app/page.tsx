@@ -1,8 +1,8 @@
 import { 
   Container,Tabs, TabsList,
   TabsTab, TabsPanel, Title, 
-  Divider, Stack, Text,
-  Timeline, TimelineItem
+  Divider, Text, Timeline,
+  TimelineItem
 } from '@mantine/core'
 
 import { IconNumber1, IconNumber2, IconNumber3 } from '@tabler/icons-react'
