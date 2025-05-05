@@ -8,7 +8,7 @@ import { PROC_CREATE_NEW_MEMBER_AND_GROUP, type ProcCreateNewMemberAndGroupParam
 import { SupabaseDBClient } from '@/db/supabase-client'
 import { type ServerActionResults } from '@/actions/return-types'
 import { HTTP_CODES, HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
-import { type Group } from '@/entities/groups'
+import { type Group } from '@/entities/group'
 import { type Member } from '@/entities/member'
 
 const LOGGER_PREFIX = '[actions/create-new-member-and-group-action]'
@@ -91,7 +91,7 @@ function validateNewMemberAndNewGroupDTO(member: NewMemberDTO, group: NewGroupDT
   }
 
   // Group can set a password to join
-  if (group.password?.trim() !== '') {
+  if (group.password && group.password?.trim() !== '') {
     const groupPasswordErrorValidationMessage = isValidGroupPassword(group.password)
     if (groupPasswordErrorValidationMessage !== null) {
       return groupPasswordErrorValidationMessage

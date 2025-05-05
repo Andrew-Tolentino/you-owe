@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { Card, Group, Text, Badge, SimpleGrid, Button, Center } from '@mantine/core'
 
-import { type Group as GroupEntity } from '@/entities/groups'
+import { type Group as GroupEntity } from '@/entities/group'
 
 interface DisplayGroupsProps {
   /**

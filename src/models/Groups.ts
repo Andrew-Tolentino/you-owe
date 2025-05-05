@@ -1,6 +1,7 @@
 import { DBClient } from '@/db/db-client'
 import { SupabaseDBClient } from '@/db/supabase-client'
-import { type Group, TABLE_NAME as GroupsTable } from '@/entities/groups'
+import { type Group, TABLE_NAME as GroupsTable } from '@/entities/group'
+import { TABLE_NAME as MembersGroupsJoinTable, MemberGroup } from '@/entities/member-group'
 
 /** Model representing the Group entity that can be used for business logic related to Groups. */
 export class Groups {
@@ -24,5 +25,44 @@ export class Groups {
     }
 
     return newGroup
+  }
+
+  /**
+   * Fetches a Group given its ID.
+   * 
+   * @param {string} id - ID belonging to Group
+   * @param {boolean} redactPassword - true by default, nullifies password with Group object when true
+   * @returns {Promise<Group | null>} Returns Group if found, else null
+   */
+  async fetchGroup(id: string, redactPassword: boolean = true): Promise<Group | null> {
+    const groups: Group[] | null = await this._dbClient.getEntityById(GroupsTable, id) as Group[]
+
+    if (groups === null) {
+      return null
+    }
+
+    if (groups.length === 0) {
+      return null
+    }
+
+    if (redactPassword) {
+      // Redacting password
+      return { ...groups[0], password: null }
+    }
+    
+    return groups[0]
+  }
+
+  /**
+   * Links a Member to a Group via the join table.
+   * 
+   * @param {string} memberId - The ID of the Member to link
+   * @param {string} id - ID of the Group the Member will join 
+   * @returns {Promise<boolean>} Returns true if the Member is able to link to the Group, else false
+   */
+  async linkMemberToGroup(memberId: string, id: string): Promise<boolean> {
+    const memberGroup: Partial<MemberGroup> = { member_id: memberId, group_id: id }
+    const success = await this._dbClient.createEntity(MembersGroupsJoinTable, memberGroup)
+    return success !== null
   }
 }

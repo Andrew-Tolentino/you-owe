@@ -105,7 +105,7 @@ export default function CreateGroupForm({ member }: CreateGroupFormProps) {
       {!member ? 
         <TextInput
           label="Name"
-          placeholder="Andrew"
+          placeholder="Your name"
           key={form.key('memberName')}
           {...form.getInputProps('memberName')}
         /> 

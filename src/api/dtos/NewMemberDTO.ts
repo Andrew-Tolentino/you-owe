@@ -14,6 +14,12 @@ interface NewMemberDTO {
    * For now, every Member in the Database will be associated to a Group.
    */
   group_id?: string
+
+  /**
+   * Optional - If the Group the user wishes to join has a Password 
+   * then this field is required.
+   */
+  group_password?: string
 }
 
 export type { NewMemberDTO }

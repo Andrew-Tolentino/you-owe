@@ -4,11 +4,11 @@ import CreateGroupForm from '@/components/CreateJoinGroupTabs/CreateGroupForm'
 import { supabaseCreateServerClient } from '@/api/clients/supabase/supabase-server-client'
 import { Members } from '@/models/Members'
 import { type Member } from '@/entities/member'
-import { type Group } from '@/entities/groups'
+import { type Group } from '@/entities/group'
 import DisplayGroupsGrid from '@/components/DisplayGroupsGrid'
+import JoinGroupForm from '@/components/CreateJoinGroupTabs/JoinGroupForm'
 
 export default async function Page() {
-  // TODO: Need to check if person entering the home page is a user already.
   const supabaseClient = await supabaseCreateServerClient()
   const { data: { user } } = await supabaseClient.auth.getUser()
   let member: Member | null = null
@@ -46,7 +46,7 @@ export default async function Page() {
             <CreateGroupForm member={member} />
           </TabsPanel>
           <TabsPanel value="join-group">
-            Join a Group Form
+            <JoinGroupForm member={member}/>
           </TabsPanel>
         </Tabs>             
       </Container>

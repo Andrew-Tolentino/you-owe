@@ -1,7 +1,7 @@
 import { type NewGroupDTO } from '@/api/dtos/NewGroupDTO'
 import { ERROR_MESSAGE_FUNCTIONS, HTTP_CODES, HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
 import { isString, isValidGroupPassword } from '@/api/utils/validators'
-import { type Group } from '@/entities/groups'
+import { type Group } from '@/entities/group'
 import { type ServerActionResults } from '@/actions/return-types'
 import { Members } from '@/models/Members'
 import { Groups } from '@/models/Groups'
@@ -31,7 +31,7 @@ export async function createNewGroupAction({ name, password, creator_member_id }
   const members = new Members()
   const member = await members.fetchMemberById(creatorMemberId)
   if (member === null || member.deleted_at !== null) {
-    Logger.error(`${LOGGER_PREFIX} createNewGroupAction: Unable to create a group because Member with ID - ${creator_member_id} does not exist.`)
+    Logger.info(`${LOGGER_PREFIX} createNewGroupAction: Unable to create a Group because Member with ID "${creator_member_id}" does not exist.`)
     // TODO: This might not be a friendly error message to display on the frontend. Might need to change this somewhere here or upstream.
     return { success: false, errorMessage: ERROR_MESSAGE_FUNCTIONS.RESOURCE_WITH_ID_NOT_FOUND('Member', creatorMemberId), httpCode: HTTP_CODES.BAD_REQUEST }
   }
@@ -42,7 +42,7 @@ export async function createNewGroupAction({ name, password, creator_member_id }
     return { success: true, httpCode: HTTP_CODES.CREATED, payload: newGroup }
   }
 
-  Logger.error(`${LOGGER_PREFIX} createNewGroupAction: Unable to create a group for Member with ID - ${creator_member_id}`)
+  Logger.info(`${LOGGER_PREFIX} createNewGroupAction: Unable to create a Group for Member with ID "${creator_member_id}"`)
   return { success: false, errorMessage: HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR, httpCode: HTTP_CODES.INTERNAL_SERVER_ERROR }
 }
 

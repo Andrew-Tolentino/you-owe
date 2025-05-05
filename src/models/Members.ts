@@ -1,8 +1,9 @@
 import { FilterOperator, type DBClient, type DBFilterMap } from '@/db/db-client'
+import { PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, ProcCreateNewMemberAndLinkToMemberGroups } from '@/db/stored-procedures'
 import { SupabaseDBClient } from '@/db/supabase-client'
-import { type Group, TABLE_NAME as GroupsTable } from '@/entities/groups'
+import { type Group, TABLE_NAME as GroupsTable } from '@/entities/group'
 import { type Member, TABLE_NAME as MembersTable } from '@/entities/member'
-import { MEMBERS_GROUPS_JOIN_TABLE as MembersGroupsJoinTable } from '@/entities/join-entities-constants'
+import {  MemberGroup, TABLE_NAME as MembersGroupsJoinTable } from '@/entities/member-group'
 
 /** Model representing the Member entity that can be use for business logic related to Members. */
 export class Members {
@@ -13,23 +14,59 @@ export class Members {
   }
 
   /**
+   * Creates a new Member and links the Member to a given Group.
+   * 
+   * @param {ProcCreateNewMemberAndLinkToMemberGroups} ProcCreateNewMemberAndLinkToMemberGroups
+   * 
+   * @returns {Member} Newly created Member
+   */
+  async createMemberAndLinkToGroup({ member_name, group_id, auth_user_id }: ProcCreateNewMemberAndLinkToMemberGroups): Promise<Member | null> {
+    const members = await this._dbClient.invokeStoredProcedure(PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, { member_name, group_id, auth_user_id }) as Member[]
+    if (members === null) {
+      return null
+    }
+
+    return members[0] as Member
+  }
+
+  /**
    * Fetches a Member given its authUserId.
    * 
    * @param {string} authUserId 
    * @returns {Promise<Member | null>} Returns Member if found, else null
    */
   async fetchMemberByAuthUserId(authUserId: string): Promise<Member | null> {
-    return await this._dbClient.getEntityByAuthUserId(MembersTable, authUserId) as Member
+    const members: Member[] | null =  await this._dbClient.getEntityByAuthUserId(MembersTable, authUserId) as Member[]
+
+    if (members === null) {
+      return null
+    }
+
+    if (members.length === 0) {
+      return null
+    }
+
+    return members[0] as Member
   }
 
   /**
-   * Fetches a Member given its id.
+   * Fetches a Member given its ID.
    * 
    * @param {string} id
    * @returns {Promise<Member | null>} Returns Member if found, else null
    */
   async fetchMemberById(id: string): Promise<Member | null> {
-    return await this._dbClient.getEntityById(MembersTable, id) as Member
+    const members: Member[] | null =  await this._dbClient.getEntityById(MembersTable, id) as Member[]
+
+    if (members === null) {
+      return null
+    }
+
+    if (members.length === 0) {
+      return null
+    }
+
+    return members[0] as Member
   }
 
   /**
@@ -60,5 +97,39 @@ export class Members {
       member,
       groups: rawGroup.map((val) => ({ ...val, password: null })) // Redact password
     }
+  }
+
+  /**
+   * Checks if a Member belongs to a Group regardless if the Member/Group is active.
+   * 
+   * @param {string} memberId - ID of the Member
+   * @param {string} groupId - ID of the Group
+   * 
+   * @returns {Promise<boolean>} Returns true if the Member belongs to the Group, else false
+   */
+  async isMemberInGroup(memberId: string, groupId: string): Promise<boolean> {
+    const dbFilters: DBFilterMap[] = [
+      {
+        column: 'member_id',
+        value: memberId,
+        operator: FilterOperator.EQUALS
+      },
+      {
+        column: 'group_id',
+        value: groupId,
+        operator: FilterOperator.EQUALS
+      }
+    ] 
+    const membersGroups: MemberGroup[] | null = await this._dbClient.getEntityByDBFilters(MembersGroupsJoinTable, dbFilters) as MemberGroup[]
+    
+    if (membersGroups === null) {
+      return false
+    }
+
+    if (membersGroups.length === 0) {
+      return false
+    }
+
+    return true
   }
 }
