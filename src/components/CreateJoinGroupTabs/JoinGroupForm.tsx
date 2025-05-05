@@ -89,21 +89,11 @@ export default function JoinGroupForm({ member }: JoinGroupFormProps) {
 
   async function onSubmit(formData: typeof form.values) {
     setServerErrorMessage('')
-    
-    if (member) {
-      const joinGroupDTO: JoinGroupDTO = { member_id: member.id, group_id: formData.groupId, group_password: formData.groupPassword }
-      const serverActionResult = await memberJoinGroupServerAction(joinGroupDTO)
-      if (!serverActionResult.success) {
-        const errorMessage = serverActionResult.errorMessage ? serverActionResult.errorMessage : HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR
-        setServerErrorMessage(errorMessage)
-      }
-    } else {
-      const newMemberDTO: NewMemberDTO = { name: formData.memberName, group_id: formData.groupId, group_password: formData.groupPassword }
-      const serverActionResult = await createNewMemberAndJoinGroupServerAction(newMemberDTO)
-      if (!serverActionResult.success) {
-        const errorMessage = serverActionResult.errorMessage ? serverActionResult.errorMessage : HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR
-        setServerErrorMessage(errorMessage)
-      }
+    const dto = member ? { member_id: member.id, group_id: formData.groupId, group_password: formData.groupPassword } as JoinGroupDTO : { name: formData.memberName, group_id: formData.groupId, group_password: formData.groupPassword } as NewMemberDTO
+    const serverActionResult = member ? await await memberJoinGroupServerAction(dto as JoinGroupDTO) : await createNewMemberAndJoinGroupServerAction(dto as NewMemberDTO) 
+    if (!serverActionResult.success) {
+      const errorMessage = serverActionResult.errorMessage ? serverActionResult.errorMessage : HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR
+      setServerErrorMessage(errorMessage)
     }
   }
 
