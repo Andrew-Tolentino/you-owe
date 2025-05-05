@@ -103,7 +103,7 @@ export default function CreateGroupForm({ member }: CreateGroupFormProps) {
   }
    
   return (
-    <form onSubmit={form.onSubmit(onSubmit)}>
+    <form onSubmit={form.onSubmit(onSubmit)} style={{ marginTop: "14px" }}>
       {!member ? 
         <TextInput
           size="md"
@@ -117,6 +117,7 @@ export default function CreateGroupForm({ member }: CreateGroupFormProps) {
       }
 
       <TextInput
+        mt="sm"
         size="md"
         label="Group Name"
         placeholder="Bar Louis's Night Out"
@@ -125,6 +126,7 @@ export default function CreateGroupForm({ member }: CreateGroupFormProps) {
       />
 
       <TextInput
+        mt="sm"
         size="md"
         label="Group Password"
         placeholder="Optional password to join"

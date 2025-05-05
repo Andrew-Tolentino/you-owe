@@ -67,12 +67,12 @@ export default async function Page() {
         </Tabs>             
       </Container>
 
-      <Container>
+      <Container mt="md">
         <DisplayGroupsGrid groups={groups} />
       </Container>
 
-      <Container>
-        <Title order={2} mt="md" mb="md">How it works</Title>
+      <Container mt="md">
+        <Title order={2} mb="sm">How it works</Title>
         <Timeline bulletSize={30} lineWidth={3} active={3} color="black">
           <TimelineItem
             bullet={ <IconNumber1 size={14} /> }

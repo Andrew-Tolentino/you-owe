@@ -100,7 +100,7 @@ export default function JoinGroupForm({ member }: JoinGroupFormProps) {
   }
 
   return (
-    <form onSubmit={form.onSubmit(onSubmit)}>
+    <form onSubmit={form.onSubmit(onSubmit)} style={{ marginTop: "14px" }}>
       {!member ? 
         <TextInput
           size="md"
@@ -114,6 +114,7 @@ export default function JoinGroupForm({ member }: JoinGroupFormProps) {
       }
 
       <TextInput
+        mt="sm"
         size="md"
         label="Group ID"
         placeholder="ID linked to the group"
@@ -122,6 +123,7 @@ export default function JoinGroupForm({ member }: JoinGroupFormProps) {
       />
 
       <TextInput
+        mt="sm"
         size="md"
         label="Group Password"
         placeholder="Required if the group has one"
