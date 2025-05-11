@@ -1,5 +1,5 @@
 import { FilterOperator, type DBClient, type DBFilterMap } from '@/db/db-client'
-import { PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, ProcCreateNewMemberAndLinkToMemberGroups } from '@/db/stored-procedures'
+import { PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, ProcCreateNewMemberAndLinkToMemberGroupsParameters } from '@/db/stored-procedures'
 import { SupabaseDBClient } from '@/db/supabase-client'
 import { type Group, TABLE_NAME as GroupsTable } from '@/entities/group'
 import { type Member, TABLE_NAME as MembersTable } from '@/entities/member'
@@ -14,23 +14,31 @@ export class Members {
   }
 
   /**
-   * Creates a new Member and links the Member to a given Group.
+   * Creates a new Member and links the Member to a specified Group.
    * 
-   * @param {ProcCreateNewMemberAndLinkToMemberGroups} ProcCreateNewMemberAndLinkToMemberGroups
+   * @param {string} memberName - Name of Member
+   * @param {string} groupId - ID of Group the newly created Member will join
+   * @param {string} authUserId - Authentication ID of the User linked to the Member
    * 
    * @returns {Member} Newly created Member
    */
-  async createMemberAndLinkToGroup({ member_name, group_id, auth_user_id }: ProcCreateNewMemberAndLinkToMemberGroups): Promise<Member | null> {
-    const members = await this._dbClient.invokeStoredProcedure(PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, { member_name, group_id, auth_user_id }) as Member[]
-    if (members === null) {
+  async createMember(memberName: string, groupId: string, authUserId: string ): Promise<Member | null> {
+    const procParams: ProcCreateNewMemberAndLinkToMemberGroupsParameters = {
+      member_name: memberName,
+      group_id: groupId,
+      auth_user_id: authUserId
+    } 
+
+    const storedProcResults = await this._dbClient.invokeStoredProcedure<Member>(PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, procParams)
+    if (!storedProcResults.success) {
       return null
     }
 
-    return members[0] as Member
+    return storedProcResults.payload as Member
   }
 
   /**
-   * Fetches a Member given its authUserId.
+   * Fetches a Member given its associated User Authentication ID.
    * 
    * @param {string} authUserId 
    * @returns {Promise<Member | null>} Returns Member if found, else null

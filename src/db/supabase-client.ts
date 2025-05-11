@@ -1,9 +1,14 @@
-import { DBFilterMap, FilterOperator, type DBClient } from '@/db/db-client'
+import { SupabaseClient } from '@supabase/supabase-js'
+import { PostgrestError, PostgrestFilterBuilder } from '@supabase/postgrest-js';
+
+import { type DBFilterMap, FilterOperator, type DBClient } from '@/db/db-client'
 import { type YouOweEntity } from '@/entities/entity'
 import { supabaseCreateServerClient } from '@/api/clients/supabase/supabase-server-client'
 import Logger from '@/utils/logger'
-import { SupabaseClient } from '@supabase/supabase-js'
-import { PostgrestFilterBuilder } from '@supabase/postgrest-js';
+
+import { CUSTOM_DATABASE_ERRORS, DATABASE_SQL_STATE_CUSTOM_ERROR_CODE, DatabaseError } from '@/db/db-custom-error'
+import { HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
+import { type StoredProcedureResults } from '@/types/promise-results-types'
 
 const LOGGER_PREFIX = '[db/supabase-client]'
 
@@ -133,27 +138,29 @@ export class SupabaseDBClient implements DBClient {
   /**
    * Uses the Supabase client to invoke a stored procedure with the expectation of a return value.
    * 
-   * @param {string} procName - Name of the stored procedure to be executed. 
-   * @param {object?} parameters - Object containing arguments that is needed for stored procedure.
+   * @param {string} procName - Name of the stored procedure to be executed
+   * @param {object?} parameters - Object containing arguments that is needed for stored procedure
    * 
-   * @returns {Promise<object | null>} Returns object of proc returned values if successfull or null if stored procedure failed.
+   * @returns {Promise<StoredProcedureResults<T>>} Returns StoredProcedureResults of type T where T will be the payload value if stored procedure finished successfully
    */
-  async invokeStoredProcedure(procName: string, parameters?: object): Promise<unknown | null> {
+  async invokeStoredProcedure<T>(procName: string, parameters?: object): Promise<StoredProcedureResults<T>> {
     const supabaseClient = await this.getSupabaseClient()
+    let databaseError: DatabaseError | null = null
     const { data, error } = parameters ? await supabaseClient.rpc(procName, parameters) : await supabaseClient.rpc(procName)
     if (error) {
-      Logger.error(`${LOGGER_PREFIX} invokeStoredProcedure: Error when calling stored procedure. Error code: "${error.code}" and message: "${error.message}".`)
-      return null
+      Logger.error(`${LOGGER_PREFIX} invokeStoredProcedure: Error when calling stored procedure "${procName}" with parameters ${JSON.stringify(parameters)}. Error code: "${error.code}" and message: "${error.message}".`)
+      const isCustomDatabaseError = this.isSQLStateCustomError(error)
+      databaseError = { 
+        code: error.code,
+        errorType: this.getCustomDatabaseError(error),
+        clientMessage: isCustomDatabaseError ? error.message : HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
+        details: isCustomDatabaseError ? error.details : error.message
+      }
+
+      return { success: false, databaseError } as StoredProcedureResults<T>
     }
 
-
-    if (data) {
-      Logger.info(`${LOGGER_PREFIX} invokeStoredProcedure: data ${JSON.stringify(data)}`)
-      return data
-    }
-
-    Logger.error(`${LOGGER_PREFIX} invokeStoredProcedure: Did not return anything after completing.`)
-    return null
+    return { success: true, databaseError: null, payload: data as T } as StoredProcedureResults<T>
   }
 
   /**
@@ -239,5 +246,36 @@ export class SupabaseDBClient implements DBClient {
     })
 
     return queryBuilder
+  }
+
+  /**
+   * Helper method that checks the PostgresError type returned from Supabase and returns the specific error type if possible.
+   * If the PostgresError is a custom one, then the error code should be '45000'.
+   * 
+   * @param {string} errorStr - Error hint from Database.
+   *  
+   * @returns {CUSTOM_DATABASE_ERRORS} enum mapping to the custom database error 
+   */
+  private getCustomDatabaseError(postgresError: PostgrestError): CUSTOM_DATABASE_ERRORS {
+    // Check if the error is a custom one
+    if (!this.isSQLStateCustomError(postgresError)) {
+      return CUSTOM_DATABASE_ERRORS.INTERVAL_SERVER_ERROR
+    }
+
+    switch(postgresError.hint) {
+      case CUSTOM_DATABASE_ERRORS.CUSTOM_RESOURCE_NOT_FOUND_ERROR:
+        return CUSTOM_DATABASE_ERRORS.CUSTOM_RESOURCE_NOT_FOUND_ERROR
+      case CUSTOM_DATABASE_ERRORS.CUSTOM_VALIDATION_ERROR:
+        return CUSTOM_DATABASE_ERRORS.CUSTOM_VALIDATION_ERROR
+      default: {
+        Logger.info(`${LOGGER_PREFIX} getCustomDatabaseError: Did not account for custom PostgresError from Supabase. Error found - ${JSON.stringify(postgresError)}.`)
+        return CUSTOM_DATABASE_ERRORS.INTERVAL_SERVER_ERROR
+      }
+    }
+  }
+
+  /** Helper method to detect if the database error is a custom error which would then contain client friendly error messages. */
+  private isSQLStateCustomError(postgresError: PostgrestError): boolean {
+    return postgresError.code === DATABASE_SQL_STATE_CUSTOM_ERROR_CODE
   }
 }

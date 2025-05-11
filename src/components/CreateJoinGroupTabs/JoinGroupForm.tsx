@@ -71,7 +71,7 @@ export default function JoinGroupForm({ member }: JoinGroupFormProps) {
 
   function validateGroupIdField(val: string): string | null {
     if (!isString(val)) {
-      return "Invalid 'Group Id'."
+      return "Invalid 'Group ID'."
     }
 
     return null

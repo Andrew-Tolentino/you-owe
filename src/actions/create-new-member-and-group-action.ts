@@ -6,16 +6,14 @@ import { isString, isValidGroupPassword } from '@/api/utils/validators'
 import { type DBClient } from '@/db/db-client'
 import { PROC_CREATE_NEW_MEMBER_AND_GROUP, type ProcCreateNewMemberAndGroupParameters, type ProcCreateNewMemberAndGroupQuery } from '@/db/stored-procedures'
 import { SupabaseDBClient } from '@/db/supabase-client'
-import { type ServerActionResults } from '@/actions/return-types'
+import { type ServerActionResults } from '@/types/promise-results-types'
 import { HTTP_CODES, HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
 import { type Group } from '@/entities/group'
 import { type Member } from '@/entities/member'
 
 const LOGGER_PREFIX = '[actions/create-new-member-and-group-action]'
 
-/**
- * Payload returned after successfully calling the "createNewMemberAndGroupAction" action.
- */
+/** Payload returned after successfully calling the "createNewMemberAndGroupAction" action. */
 interface CreateNewMemberAndGroupActionPayload {
   member: Partial<Member>
   group: Partial<Group>
@@ -28,8 +26,9 @@ export { type CreateNewMemberAndGroupActionPayload }
  *  2. Creates a new Member and ties the Member to the newly created Supabase user.
  *  3. Creates a new Group with the newly created Member as the Group creator and ties the new Group to the Member.
  * 
- * @param {NewMemberDTO} newMemberDTO 
- * @param {NewGroupDTO} newGroupDTO 
+ * @param {NewMemberDTO} newMemberDTO
+ * @param {NewGroupDTO} newGroupDTO
+ * 
  * @returns {Promise<ServerActionResults<CreateNewMemberAndGroupActionPayload>>} ServerActionResults containing the "CreateNewMemberAndGroupActionPayload" as the payload
  */
 export async function createNewMemberAndGroupAction(newMemberDTO: NewMemberDTO, newGroupDTO: NewGroupDTO): Promise<ServerActionResults<CreateNewMemberAndGroupActionPayload>> {
@@ -57,8 +56,9 @@ export async function createNewMemberAndGroupAction(newMemberDTO: NewMemberDTO, 
       auth_user_id: data.user.id
     }
 
-    const resultQueryArr = await db.invokeStoredProcedure(PROC_CREATE_NEW_MEMBER_AND_GROUP, procParams) as ProcCreateNewMemberAndGroupQuery[]
-    if (resultQueryArr !== null) {
+    const storedProcResults = await db.invokeStoredProcedure<ProcCreateNewMemberAndGroupQuery[]>(PROC_CREATE_NEW_MEMBER_AND_GROUP, procParams)
+    if (storedProcResults.success) {
+      const resultQueryArr = storedProcResults.payload as ProcCreateNewMemberAndGroupQuery[]
       const resultQuery = resultQueryArr[0]
       const newMember: Partial<Member> = { id: resultQuery.member_id, name: resultQuery.member_name, created_at: resultQuery.member_created_at}
       const newGroup: Partial<Group> = { id: resultQuery.group_id, name: resultQuery.group_name, created_at: resultQuery.group_created_at, creator_member_id: resultQuery.member_id }
@@ -74,9 +74,10 @@ export async function createNewMemberAndGroupAction(newMemberDTO: NewMemberDTO, 
 /**
  * Validates the incoming DTO for creating a new Member and Group.
  * 
- * @param {NewMemberDTO} member 
- * @param {NewGroupDTO} group 
- * @returns {string | null} Returns a string if a field is invalid. Else, null.
+ * @param {NewMemberDTO} member
+ * @param {NewGroupDTO} group
+ * 
+ * @returns {string | null} Returns a string error message if a field is invalid. Else, returns null.
  */
 function validateNewMemberAndNewGroupDTO(member: NewMemberDTO, group: NewGroupDTO): string | null {
   

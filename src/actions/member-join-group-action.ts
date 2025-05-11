@@ -1,5 +1,5 @@
 import { type JoinGroupDTO } from '@/api/dtos/JoinGroupDTO'
-import { type ServerActionResults } from '@/actions/return-types'
+import { type ServerActionResults } from '@/types/promise-results-types'
 import { Members } from '@/models/Members'
 import Logger from '@/utils/logger'
 import { ERROR_MESSAGE_FUNCTIONS, HTTP_CODES, HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
@@ -33,7 +33,7 @@ export async function memberJoinGroupAction({ member_id, group_id, group_passwor
   const groups = new Groups()
   const group = await groups.fetchGroup(group_id, false)
   if (group === null || group.deleted_at !== null) {
-    Logger.info(`${LOGGER_PREFIX} memberJoinGroupAction: Unable to link Member with ID "${member_id}" to Group with ID "${group_id}" becayse Group doesn't exist or is inactive.`)
+    Logger.info(`${LOGGER_PREFIX} memberJoinGroupAction: Unable to link Member with ID "${member_id}" to Group with ID "${group_id}" because Group doesn't exist or is inactive.`)
     return { success: false, errorMessage: ERROR_MESSAGE_FUNCTIONS.RESOURCE_WITH_ID_NOT_FOUND('Group', group_id), httpCode: HTTP_CODES.BAD_REQUEST }    
   }
   // Check if Group is closed, meaning that people are not able join anymore

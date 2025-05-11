@@ -1,4 +1,5 @@
 import { type YouOweEntity } from '@/entities/entity'
+import { type StoredProcedureResults } from '@/types/promise-results-types'
 
 /** Base Interface that will be used throughout the application to hide implementation details per DB client provider. */
 interface DBClient {
@@ -7,7 +8,7 @@ interface DBClient {
   getEntityByDBFilters(tableName: string, dbFilters: DBFilterMap[]): Promise<YouOweEntity[] | null>
   createEntity(tableName: string, entity: Partial<YouOweEntity>): Promise<YouOweEntity | null>
   deleteEntityById(tableName: string, id: string): Promise<boolean>
-  invokeStoredProcedure(procName: string, parameters?: object): Promise<unknown | null>
+  invokeStoredProcedure<T>(procName: string, parameters?: object): Promise<StoredProcedureResults<T>>
   invokeStoredProcedureVoid(procName: string, parameters?: object): Promise<boolean>
   getOneToManyEntities<T extends YouOweEntity, U extends YouOweEntity>(singleRelationTableName: string, manyRelationTableName: string, joinTableName: string, dbFilters: DBFilterMap[]): Promise<{ [key: string]: T | U[]} | null>
 }

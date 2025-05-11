@@ -1,3 +1,5 @@
+DROP FUNCTION "public".create_new_member_and_link_to_members_groups;
+
 -- Creates new Member and respective Members_Groups entries.
 CREATE OR REPLACE FUNCTION "public".create_new_member_and_link_to_members_groups(
   member_name text,

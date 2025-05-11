@@ -42,7 +42,7 @@ export default async function Page() {
       <Divider my={"md"} />
 
       {member ?
-        <Title order={3} mb="sm" style={{ textAlign: "center" }}>Welcome back, {member.name}</Title>
+        <Title order={3} mb="sm" style={{ textAlign: "center" }}>Welcome, {member.name}</Title>
         :
         null
       }

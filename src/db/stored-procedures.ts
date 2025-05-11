@@ -10,9 +10,7 @@ import { type Member } from '@/entities/member'
  */
 const PROC_CREATE_NEW_MEMBER_AND_GROUP = 'create_new_member_and_group'
 
-/**
- * PROC_CREATE_NEW_MEMBER_AND_GROUP - Parameters
- */
+/** PROC_CREATE_NEW_MEMBER_AND_GROUP - Parameters */
 interface ProcCreateNewMemberAndGroupParameters {
   /**
    * The name of the new Member the user will associated to.
@@ -36,9 +34,7 @@ interface ProcCreateNewMemberAndGroupParameters {
   auth_user_id: string
 }
 
-/**
- * PROC_CREATE_NEW_MEMBER_AND_GROUP - Returning query mapping
- */
+/** PROC_CREATE_NEW_MEMBER_AND_GROUP - Returning query mapping */
 interface ProcCreateNewMemberAndGroupQuery {
   /**
    * ID of the newly created Member.
@@ -76,15 +72,13 @@ export { PROC_CREATE_NEW_MEMBER_AND_GROUP, type ProcCreateNewMemberAndGroupParam
 /**
  * Creates a new Member and then links them to an existing Group.
  * 
- * @param {ProcCreateNewMemberAndLinkToMemberGroups} ProcCreateNewMemberAndLinkToMemberGroups
+ * @param {ProcCreateNewMemberAndLinkToMemberGroupsParameters} ProcCreateNewMemberAndLinkToMemberGroups
  * @returns {Members[]} Members[]
  */
 const PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS = 'create_new_member_and_link_to_members_groups'
 
-/**
- * PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS - Parameters
- */
-interface ProcCreateNewMemberAndLinkToMemberGroups {
+/** PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS - Parameters */
+interface ProcCreateNewMemberAndLinkToMemberGroupsParameters {
   /**
    * The name of the new Member the user will associated to.
    */
@@ -100,4 +94,53 @@ interface ProcCreateNewMemberAndLinkToMemberGroups {
    */
   auth_user_id: string
 }
-export { PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, type ProcCreateNewMemberAndLinkToMemberGroups }
+export { PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, type ProcCreateNewMemberAndLinkToMemberGroupsParameters }
+
+/**
+ * Creates a new Order for a Member within a Group.
+ * 
+ * Does the following checks:
+ *  1. Check if Member is active
+ *  2. Check if Group is active and Member belongs in Group
+ *  3. Check if participant Members are active and belong in Group
+ */
+const PROC_CREATE_NEW_ORDER = 'create_new_order'
+
+/** PROC_CREATE_NEW_ORDER - Parameters */
+interface ProcCreateNewOrderParameters {
+  /**
+   * ID belonging to the Member who is creating the Order.
+   */
+  creator_member_id: string
+
+  /**
+   * ID belonging to the Group the Member is creating the Order for.
+   */
+  target_group_id: string
+
+  /**
+   * Name of the Order.
+   */
+  target_title: string
+
+  /**
+   * Optional
+   * 
+   * Note for the Order.
+   */
+  target_description: string | null
+
+  /**
+   * The cost of the Order.
+   */  
+  target_price: number
+
+  /**
+   * Optional
+   * 
+   * List Member IDs who are going to split the cost of the Order.
+   */  
+  target_participant_member_ids: string[] | null
+}
+
+export { PROC_CREATE_NEW_ORDER, type ProcCreateNewOrderParameters }

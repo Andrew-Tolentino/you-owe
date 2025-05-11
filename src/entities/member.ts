@@ -4,7 +4,7 @@ import { type YouOweEntity } from '@/entities/entity';
 export const TABLE_NAME = 'members'
 
 /**
- * Mapping  of the "members" table in the Database.
+ * Mapping of the "members" table in the Database.
  */
 interface Member extends YouOweEntity {
   /**

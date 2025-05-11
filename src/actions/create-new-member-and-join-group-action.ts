@@ -8,7 +8,7 @@ import { Group } from '@/entities/group'
 import { supabaseCreateServerClient } from '@/api/clients/supabase/supabase-server-client'
 import Logger from '@/utils/logger'
 import { Members } from '@/models/Members'
-import { ProcCreateNewMemberAndLinkToMemberGroups } from '@/db/stored-procedures'
+import { type ProcCreateNewMemberAndLinkToMemberGroupsParameters } from '@/db/stored-procedures'
 import { Member } from '@/entities/member'
 
 const LOGGER_PREFIX = '[actions/create-new-member-and-join-group-action]'
@@ -50,13 +50,8 @@ export async function createNewMemberAndJoinGroupAction({ name, group_id, group_
   }
 
   if (data.user) {
-    const procParams: ProcCreateNewMemberAndLinkToMemberGroups = {
-      member_name: newMemberDTO.name,
-      group_id: newMemberDTO.group_id as string,
-      auth_user_id: data.user.id
-    } 
     const members = new Members()
-    const member = await members.createMemberAndLinkToGroup(procParams)
+    const member = await members.createMember(newMemberDTO.name, newMemberDTO.group_id as string, data.user.id)
     if (member !== null) {
       return { success: true, httpCode: HTTP_CODES.CREATED ,payload: member }
     }
