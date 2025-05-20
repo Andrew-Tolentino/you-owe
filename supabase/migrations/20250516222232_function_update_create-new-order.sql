@@ -1,3 +1,15 @@
+-- Enable RLS on the table
+ALTER TABLE realtime.messages ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Authenticated users can receive broadcasts"
+ON "realtime"."messages"
+FOR ALL
+TO authenticated 
+USING ( true );
+
+-- Add table to the realtime publication
+ALTER publication supabase_realtime ADD TABLE "public"."orders";
+
 -- Create a new Order
 CREATE OR REPLACE FUNCTION "public".create_new_order(
   creator_member_id text,

@@ -37,4 +37,11 @@ export class Orders {
 
     return { data: storedProcResults.payload as Order }
   }
+
+  // TODO: Write a function uses filters to get orders
+  // Make sure to not grab any orders that have been deleted
+  // TODO: Think of pagination in the future
+  async getOrders() {
+
+  }
 }

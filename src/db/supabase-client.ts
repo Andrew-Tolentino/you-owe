@@ -252,7 +252,7 @@ export class SupabaseDBClient implements DBClient {
    * Helper method that checks the PostgresError type returned from Supabase and returns the specific error type if possible.
    * If the PostgresError is a custom one, then the error code should be '45000'.
    * 
-   * @param {string} errorStr - Error hint from Database.
+   * @param {PostgrestError} postgresError - Error from Postgres.
    *  
    * @returns {CUSTOM_DATABASE_ERRORS} enum mapping to the custom database error 
    */

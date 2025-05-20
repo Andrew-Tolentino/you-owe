@@ -1,10 +1,16 @@
 import { createNewOrderAction } from '@/actions/create-new-order-action'
 import { NewOrderDTO } from '@/api/dtos/NewOrderDTO'
-import { HTTP_CODES, HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
+import { HTTP_CODES } from '@/api/utils/HTTPStatusCodes'
 import Logger from '@/utils/logger'
 
 const LOGGER_PREFIX = '[app/api/orders/route]'
 
+/**
+ * TODO: Write comments
+ * 
+ * @param request 
+ * @returns 
+ */
 export async function POST(request: Request) {
   let requestBody: NewOrderDTO | null = null
   try {
@@ -22,3 +28,19 @@ export async function POST(request: Request) {
   return Response.json(result.payload, { status: result.httpCode })
 }
 
+/** Query parameters that can be used as filters when retreiving Orders via GET method on /api/orders. */
+interface OrdersGetParams {
+  group_id?: string
+}
+
+/**
+ * HTTP GET method to retreive Orders based on different filters.
+ * 
+ * @param {Request} _request
+ * @param {OrdersGetParams} params - Different filters that can be applied when getting Orders 
+ */
+export async function GET(_request: Request, { params }: { params: Promise<OrdersGetParams> }) {
+  // Check for group_id query param
+  const { group_id } = await params
+
+}
