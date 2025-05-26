@@ -32,7 +32,7 @@ CREATE OR REPLACE FUNCTION "public".get_orders(
       -- Create json object for creator member.
       SELECT to_jsonb(row) INTO creator_member_payload
       FROM (
-        SELECT m.id AS member_id, m.name
+        SELECT m.id, m.name
         FROM "public"."members" m
         WHERE m.id = specific_order.creator_member_id
       ) row;
@@ -42,7 +42,7 @@ CREATE OR REPLACE FUNCTION "public".get_orders(
         to_jsonb(row)
       ) INTO participant_members_arr_payload
       FROM (
-        SELECT m.id AS member_id, m.name
+        SELECT m.id, m.name
         FROM "public"."orders_members" om 
         INNER JOIN "public"."members" m ON om.member_id = m.id
         WHERE om.order_id = specific_order.id AND om.member_id != specific_order.creator_member_id AND m.id != specific_order.creator_member_id

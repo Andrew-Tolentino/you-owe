@@ -10,7 +10,7 @@ CREATE OR REPLACE FUNCTION "public".send_order_update_broadcast_trigger() RETURN
     -- Create payload of Member who created the Order
     SELECT to_jsonb(row) INTO creator_member_payload
     FROM (
-      SELECT m.id AS member_id, m.name
+      SELECT m.id, m.name
       FROM "public"."members" m
       WHERE m.id = NEW.creator_member_id
     ) row;
@@ -18,7 +18,7 @@ CREATE OR REPLACE FUNCTION "public".send_order_update_broadcast_trigger() RETURN
     -- Create payload of participant Members in the Order
     SELECT jsonb_agg(
       jsonb_build_object(
-        'member_id', row.member_id,
+        'id', row.member_id,
         'name', row.name
       )
     ) INTO participant_members_arr_payload
