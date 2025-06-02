@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION "public".send_order_update_broadcast_trigger() RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION "public".send_order_update_broadcast() RETURNS TRIGGER AS $$
   DECLARE
     payload jsonb;
     creator_member_payload jsonb;
@@ -53,4 +53,4 @@ CREATE OR REPLACE TRIGGER send_order_update_broadcast_trigger
 AFTER UPDATE
 ON "public"."orders"
 FOR EACH ROW
-EXECUTE PROCEDURE "public".send_order_update_broadcast_trigger();
+EXECUTE PROCEDURE "public".send_order_update_broadcast();

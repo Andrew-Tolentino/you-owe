@@ -1,6 +1,6 @@
 -- Trigger that will broadcase a Supabase message once an Order has been updated.
 -- This will be on the "publics".orders table.
-CREATE OR REPLACE FUNCTION "public".send_order_update_broadcast_trigger() RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION "public".send_order_update_broadcast() RETURNS TRIGGER AS $$
   DECLARE
     payload jsonb;
     creator_member_payload jsonb;
