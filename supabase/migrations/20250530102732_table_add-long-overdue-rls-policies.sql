@@ -44,6 +44,20 @@ creator_member_id IN (
   WHERE m.auth_user_id = (SELECT auth.uid())
  )
 );
+
+-- Members can only UPDATE Groups they made
+CREATE POLICY "authenticated user - Members can only UPDATE Groups they made"
+ON "public"."orders"
+AS PERMISSIVE
+FOR UPDATE
+TO authenticated
+WITH CHECK (
+  creator_member_id IN (
+    SELECT m.id
+    FROM "public"."members" m
+    WHERE m.id = creator_member_id AND m.auth_user_id = (SELECT auth.uid())
+  )
+);
 -- **** "public"."groups" ****
 
 
