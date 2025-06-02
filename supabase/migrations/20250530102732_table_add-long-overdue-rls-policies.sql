@@ -47,7 +47,7 @@ creator_member_id IN (
 
 -- Members can only UPDATE Groups they made
 CREATE POLICY "authenticated user - Members can only UPDATE Groups they made"
-ON "public"."orders"
+ON "public"."groups"
 AS PERMISSIVE
 FOR UPDATE
 TO authenticated
