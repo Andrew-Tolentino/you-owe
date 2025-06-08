@@ -8,11 +8,12 @@ import { type ServerActionResults } from '@/types/promise-results-types'
  * 
  * @param {string} targetGroupId - Filter to get Orders belonging to a Group based on Group ID.
  * @param {string} targetCreatorMamberId - Filter to get Orders created by a Member based on Member ID
+ * 
  * @returns {Promise<ServerActionResults<OrdersWithMembers[]>>} 
  */
-export async function getOrdersAction(targetGroupId: string | null = null, targetCreatorMamberId: string | null = null): Promise<ServerActionResults<OrdersWithMembers[]>> {
+export async function fetchOrdersAction(targetGroupId: string | null = null, targetCreatorMamberId: string | null = null): Promise<ServerActionResults<OrdersWithMembers[]>> {
   const orders = new Orders()
-  const { data, error } = await orders.getOrders(targetGroupId, targetCreatorMamberId)
+  const { data, error } = await orders.fetchOrders(targetGroupId, targetCreatorMamberId)
   if (error) {
     return { success: false, errorMessage: error.clientMessage, httpCode: getHttpCodeFromCustomDatabaseError(error.errorType) }
   }

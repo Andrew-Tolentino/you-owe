@@ -14,6 +14,7 @@ const ERROR_MESSAGE_MEMBER_ALREADY_IN_GROUP = 'Member already belongs to Group.'
  * Links an existing active Member to an existing active Group.
  * 
  * @param {JoinGroupDTO} JoinGroupDTO
+ * 
  * @returns {Promise<ServerActionResults<null> | null>} ServerActionResults
  */
 export async function memberJoinGroupAction({ member_id, group_id, group_password }: JoinGroupDTO): Promise<ServerActionResults<void>> {

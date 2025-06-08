@@ -10,11 +10,11 @@ import { Groups } from '@/models/Groups'
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
 
-  // Fetch Groups entity with given ID
+  // Fetch Group given ID
   const groups = new Groups()
   const group = await groups.fetchGroup(id)
 
-  if (group === null || group.deleted_at !== null) {
+  if (group === null) {
     return Response.json({ error: ERROR_MESSAGE_FUNCTIONS.RESOURCE_WITH_ID_NOT_FOUND('Groups', id) }, { status: HTTP_CODES.NOT_FOUND })
   }
 

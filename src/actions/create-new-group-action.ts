@@ -14,6 +14,7 @@ const LOGGER_PREFIX = '[actions/create-new-group-action]'
  * During this process checks if the Member trying to create the Group is a valid Member.
  * 
  * @param {NewGroupDTO} { name, password, creator_member_id } fields from a "NewGroupDTO" are required
+ * 
  * @returns {Promise<ServerActionResults<Group>>} ServerActionResults containing the "Group" entity as the payload
  */
 export async function createNewGroupAction({ name, password, creator_member_id }: NewGroupDTO): Promise<ServerActionResults<Group>> {

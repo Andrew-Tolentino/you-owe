@@ -12,6 +12,7 @@ import { type OrdersWithMembers } from '@/types/orders-with-members-type'
  * The purpose of this stored procedure is for new users to create a Group (which by doing so will create a Member too).
  * 
  * @param {ProcCreateNewMemberAndGroup} ProcCreateNewMemberAndGroup
+ * 
  * @returns {ProcCreateNewMemberAndGroupQuery[]} ProcCreateNewMemberAndGroupQuery[]
  */
 const PROC_CREATE_NEW_MEMBER_AND_GROUP = 'create_new_member_and_group'
@@ -78,6 +79,7 @@ export { PROC_CREATE_NEW_MEMBER_AND_GROUP, type ProcCreateNewMemberAndGroupParam
  * Creates a new Member and then links them to an existing Group.
  * 
  * @param {ProcCreateNewMemberAndLinkToMemberGroupsParameters} ProcCreateNewMemberAndLinkToMemberGroups
+ * 
  * @returns {Members[]} Members[]
  */
 const PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS = 'create_new_member_and_link_to_members_groups'
@@ -115,6 +117,7 @@ export { PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, type ProcCreateNewMe
  *  - Payload: OrdersWithMembers
  * 
  * @param {ProcCreateNewOrderParameters} ProcCreateNewOrderParameters
+ * 
  * @returns {Order} Order
  */
 const PROC_CREATE_NEW_ORDER = 'create_new_order'
@@ -161,6 +164,7 @@ export { PROC_CREATE_NEW_ORDER, type ProcCreateNewOrderParameters }
  * Retreives Orders, in descending order based on creation, with query filters.
  * 
  * @param {ProcGetOrdersParameters} ProcGetOrdersParameters - mapping of query filters that can be applied.
+ * 
  * @returns {OrdersWithMembers[]} List of OrderWithMembers
  */
 const PROC_GET_ORDERS = 'get_orders'

@@ -40,7 +40,8 @@ export class Members {
   /**
    * Fetches a Member given its associated User Authentication ID.
    * 
-   * @param {string} authUserId 
+   * @param {string} authUserId
+   * 
    * @returns {Promise<Member | null>} Returns Member if found, else null
    */
   async fetchMemberByAuthUserId(authUserId: string): Promise<Member | null> {
@@ -61,6 +62,7 @@ export class Members {
    * Fetches a Member given its ID.
    * 
    * @param {string} id
+   * 
    * @returns {Promise<Member | null>} Returns Member if found, else null
    */
   async fetchMemberById(id: string): Promise<Member | null> {
