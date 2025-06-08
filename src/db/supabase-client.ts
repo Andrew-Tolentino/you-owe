@@ -6,7 +6,7 @@ import { type YouOweEntity } from '@/entities/entity'
 import { supabaseCreateServerClient } from '@/api/clients/supabase/supabase-server-client'
 import Logger from '@/utils/logger'
 
-import { CUSTOM_DATABASE_ERRORS, DATABASE_SQL_STATE_CUSTOM_ERROR_CODE, DatabaseError } from '@/db/db-custom-error'
+import { CUSTOM_DATABASE_ERRORS, DATABASE_SQL_STATE_CUSTOM_ERROR_CODE, type DatabaseError } from '@/db/db-custom-error'
 import { HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
 import { type StoredProcedureResults } from '@/types/promise-results-types'
 
@@ -97,10 +97,10 @@ export class SupabaseDBClient implements DBClient {
   /**
    * Uses the Supabase client to make aa new row into a table.
    * 
-   * @param {string} tableName - Table to create a new entity in.
-   * @param {Partial<YouOweEntity>} entity - Object representing the new row that will be inserted into the table.
+   * @param {string} tableName - Table to create a new entity in
+   * @param {Partial<YouOweEntity>} entity - Mapping representing the new row that will be inserted into the table
    * 
-   * @returns {Promise<YouOweEntity | null>} If successful, returns the entity created. Else, returns null.
+   * @returns {Promise<YouOweEntity | null>} If successful, returns the entity created. Else, returns null
    */
   async createEntity(tableName: string, entity: Partial<YouOweEntity>): Promise<YouOweEntity | null> {
     const supabaseClient = await this.getSupabaseClient()
@@ -115,7 +115,27 @@ export class SupabaseDBClient implements DBClient {
   }
 
   /**
-   * Uses the Supabase client to soft delete a row in a table. This will pooulate the 'deleted_at' column in the row.
+   * Uses the Supabase client to update an entity in a table.
+   * 
+   * @param {string} tableName - Table the entity to update is in
+   * @param {string} id - Unique ID of the entity
+   * @param {Partial<YouOweEntity>} entity - Mapping representing the updated entity
+   * 
+   * @returns {Promise<YouOweEntity | null>} If successful, returns the entity updated. Else, returns null
+   */
+  async updateEntityById(tableName: string, id: string, entity: Partial<YouOweEntity>): Promise<YouOweEntity | null> {
+    const supabaseClient = await this.getSupabaseClient()
+    const { data, error, status, statusText } = await supabaseClient.from(tableName).update(entity).eq('id', id).select()
+    if (error) {
+      Logger.error(`${LOGGER_PREFIX} updateEntityById: Error thrown when updating entity with ID "${id}" in the "${tableName}" table/view. Error code: "${error.code}" and message: "${error.message}". Printing out API status ${status} and status text ${statusText}`)
+      return null
+    }
+
+    return data[0] as YouOweEntity 
+  }
+
+  /**
+   * Uses the Supabase client to soft delete a row in a table. This will populate the 'deleted_at' column in the row.
    * 
    * @param {string} tableName - Table to delete a row from 
    * @param {string} id - Unique ID associated to the row
