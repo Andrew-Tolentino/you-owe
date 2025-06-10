@@ -42,10 +42,10 @@ export class Orders {
   /**
    * Fetches Orders based on filter queries.
    * 
-   * @param {string} targetGroupId - Optional query filter to get Orders belonging to a Group based on Group ID.
-   * @param {string} targetCreatorMemberId - Optional query filter to get Orders created by a Member based on Member ID.
+   * @param {string} targetGroupId - Optional query filter to get Orders belonging to a Group based on Group ID
+   * @param {string} targetCreatorMemberId - Optional query filter to get Orders created by a Member based on Member ID
    * 
-   * @returns {Promise<{data?: OrdersWithMembers[], error?: DatabaseError}>} Returns a list of Orders and Members information if successful, else a DatabaseError.
+   * @returns {Promise<{data?: OrdersWithMembers[], error?: DatabaseError}>} Returns a list of Orders and Members information if successful, else a DatabaseError
    */
   async fetchOrders(targetGroupId: string | null, targetCreatorMemberId: string | null): Promise<{data?: OrdersWithMembers[], error?: DatabaseError}> {
     const procParam: ProcGetOrdersParameters = {

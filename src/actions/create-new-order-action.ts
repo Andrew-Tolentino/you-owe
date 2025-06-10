@@ -12,7 +12,7 @@ import { Orders } from '@/models/Orders'
  * 
  * @returns {Promise<ServerActionResults<Order>>} ServerActionResults containing the 'Order' in payload if successful
  */
-export async function createNewOrderAction(newOrderDTO: NewOrderDTO): Promise<ServerActionResults<Order>> {  
+export async function createNewOrderAction(newOrderDTO: NewOrderDTO): Promise<ServerActionResults<Order>> {
   // Validate DTO
   const DTOValidationError = validateNewOrderDTO(newOrderDTO)
   if (DTOValidationError !== null) {
