@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 
 import { createNewOrderAction } from '@/actions/create-new-order-action'
-import { getOrdersAction } from '@/actions/get-orders-action'
+import { fetchOrdersAction } from '@/actions/get-orders-action'
 import { type NewOrderDTO } from '@/api/dtos/NewOrderDTO'
 import { HTTP_CODES } from '@/api/utils/HTTPStatusCodes'
 import Logger from '@/utils/logger'
@@ -18,7 +18,6 @@ interface OrdersGetParams {
  * HTTP POST method to create an Order for a Group
  * 
  * @param request - Required to contain the 'NewOrderDTO' within the request body.
- * @returns 
  */
 export async function POST(request: Request) {
   let requestBody: NewOrderDTO | null = null
@@ -53,7 +52,7 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: 'Please have at least one query parameter for filtering through Orders.' }, { status: HTTP_CODES.BAD_REQUEST })
   }
 
-  const result = await getOrdersAction(queryParams.group_id, queryParams.creator_member_id)
+  const result = await fetchOrdersAction(queryParams.group_id, queryParams.creator_member_id)
     if (!result.success) {
     return Response.json({ error: result.errorMessage }, { status: result.httpCode })
   }

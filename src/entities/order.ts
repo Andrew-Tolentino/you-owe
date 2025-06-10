@@ -43,6 +43,11 @@ interface Order extends YouOweEntity {
   created_at: Date
 
   /**
+   * Date the Order was last updated.
+   */
+  updated_at: Date
+
+  /**
    * Date the Order was deleted.
    */
   deleted_at: Date | null

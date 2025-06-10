@@ -18,6 +18,11 @@ interface Member extends YouOweEntity {
   created_at: Date
 
   /**
+   * Date the Member was last updated.
+   */
+  updated_at: Date
+
+  /**
    * Date the Member was deleted.
    */
   deleted_at: Date | null

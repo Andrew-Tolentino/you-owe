@@ -1,7 +1,7 @@
 import { 
-  Container,Tabs, TabsList,
-  TabsTab, TabsPanel, Title, 
-  Divider, Text, Timeline,
+  Container,Tabs,TabsList,
+  TabsTab,TabsPanel,Title, 
+  Divider,Text,Timeline,
   TimelineItem
 } from '@mantine/core'
 
