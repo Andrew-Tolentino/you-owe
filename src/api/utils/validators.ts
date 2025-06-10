@@ -23,7 +23,8 @@ export function isString(str: unknown): boolean {
  * Checks if the given argument meets all requirements to be used as a password to join a Group.
  * Returns a string with a specific error message if the password fails to meet a requirement.
  * 
- * @param {unknown} password 
+ * @param {unknown} password
+ * 
  * @returns {string | null} Returns null if password meets all requirements, else returns an error message
  */
 export function isValidGroupPassword(password: unknown): string | null {

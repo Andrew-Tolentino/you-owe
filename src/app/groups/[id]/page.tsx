@@ -1,3 +1,5 @@
+import DisplayOrdersGrid from '@/components/DisplayOrdersGrid'
+
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   /**
@@ -8,6 +10,6 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
    */
 
   return (
-    <h1>{id}</h1>
+    <DisplayOrdersGrid groupId={id} />
   )
 }

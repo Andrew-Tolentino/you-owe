@@ -1,11 +1,18 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { type Member } from '@/entities/member'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import {type  Order } from '@/entities/order'
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { type OrdersWithMembers } from '@/types/orders-with-members-type'
+
 /**
  * Creates a new Member and then a new Group with that Member as the Group's creator.
  * The purpose of this stored procedure is for new users to create a Group (which by doing so will create a Member too).
  * 
  * @param {ProcCreateNewMemberAndGroup} ProcCreateNewMemberAndGroup
+ * 
  * @returns {ProcCreateNewMemberAndGroupQuery[]} ProcCreateNewMemberAndGroupQuery[]
  */
 const PROC_CREATE_NEW_MEMBER_AND_GROUP = 'create_new_member_and_group'
@@ -68,11 +75,11 @@ interface ProcCreateNewMemberAndGroupQuery {
 }
 export { PROC_CREATE_NEW_MEMBER_AND_GROUP, type ProcCreateNewMemberAndGroupParameters, type ProcCreateNewMemberAndGroupQuery }
 
-
 /**
  * Creates a new Member and then links them to an existing Group.
  * 
  * @param {ProcCreateNewMemberAndLinkToMemberGroupsParameters} ProcCreateNewMemberAndLinkToMemberGroups
+ * 
  * @returns {Members[]} Members[]
  */
 const PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS = 'create_new_member_and_link_to_members_groups'
@@ -103,6 +110,15 @@ export { PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, type ProcCreateNewMe
  *  1. Check if Member is active
  *  2. Check if Group is active and Member belongs in Group
  *  3. Check if participant Members are active and belong in Group
+ * 
+ * After successfully creating an Order, broadcasts a message in the following way...
+ *  - Topic: "orders_groups-<group_id>"
+ *  - Event: ORDER_CREATED
+ *  - Payload: OrdersWithMembers
+ * 
+ * @param {ProcCreateNewOrderParameters} ProcCreateNewOrderParameters
+ * 
+ * @returns {Order} Order
  */
 const PROC_CREATE_NEW_ORDER = 'create_new_order'
 
@@ -142,5 +158,27 @@ interface ProcCreateNewOrderParameters {
    */  
   target_participant_member_ids: string[] | null
 }
-
 export { PROC_CREATE_NEW_ORDER, type ProcCreateNewOrderParameters }
+
+/**
+ * Retreives Orders, in descending order based on creation, with query filters.
+ * 
+ * @param {ProcGetOrdersParameters} ProcGetOrdersParameters - mapping of query filters that can be applied.
+ * 
+ * @returns {OrdersWithMembers[]} List of OrderWithMembers
+ */
+const PROC_GET_ORDERS = 'get_orders'
+
+/** PROC_GET_ORDERS - Parameters */
+interface ProcGetOrdersParameters {
+  /**
+   * Filter to grab Orders within a specific Group.
+   */
+  target_group_id: string | null
+
+  /**
+   * Filter to grab Orders created by specific Member.
+   */
+  target_creator_member_id: string | null
+}
+export { PROC_GET_ORDERS, type ProcGetOrdersParameters }

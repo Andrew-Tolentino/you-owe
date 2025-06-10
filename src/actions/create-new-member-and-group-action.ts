@@ -60,7 +60,7 @@ export async function createNewMemberAndGroupAction(newMemberDTO: NewMemberDTO, 
     if (storedProcResults.success) {
       const resultQueryArr = storedProcResults.payload as ProcCreateNewMemberAndGroupQuery[]
       const resultQuery = resultQueryArr[0]
-      const newMember: Partial<Member> = { id: resultQuery.member_id, name: resultQuery.member_name, created_at: resultQuery.member_created_at}
+      const newMember: Partial<Member> = { id: resultQuery.member_id, name: resultQuery.member_name, created_at: resultQuery.member_created_at }
       const newGroup: Partial<Group> = { id: resultQuery.group_id, name: resultQuery.group_name, created_at: resultQuery.group_created_at, creator_member_id: resultQuery.member_id }
 
       return { success: true, httpCode: HTTP_CODES.CREATED, payload: { member: newMember, group: newGroup } }

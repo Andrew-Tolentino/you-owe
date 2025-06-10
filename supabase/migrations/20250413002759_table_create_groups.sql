@@ -21,7 +21,7 @@ CREATE TABLE "public"."groups" (
  we want to update the "updated_at" column with the "public".set_updated_at() trigger at the DB level.
 */
 CREATE OR REPLACE TRIGGER groups_set_updated_at
-  AFTER UPDATE
-  ON "public"."groups"
-  FOR EACH ROW
-  EXECUTE PROCEDURE "public".set_updated_at();
+BEFORE UPDATE
+ON "public"."groups"
+FOR EACH ROW
+EXECUTE PROCEDURE "public".set_updated_at();

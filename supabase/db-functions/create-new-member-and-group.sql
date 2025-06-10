@@ -19,9 +19,9 @@ CREATE OR REPLACE FUNCTION "public".create_new_member_and_group(
     new_group_id text;
   BEGIN
     -- 1. Create a new Member
-      INSERT INTO "public"."members"("name", auth_user_id)
-      VALUES (member_name, auth_user_id)
-      RETURNING id INTO new_member_id;
+    INSERT INTO "public"."members"("name", auth_user_id)
+    VALUES (member_name, auth_user_id)
+    RETURNING id INTO new_member_id;
 
     -- 2. Create a new Group
     INSERT INTO "public"."groups"("name", creator_member_id, "password")

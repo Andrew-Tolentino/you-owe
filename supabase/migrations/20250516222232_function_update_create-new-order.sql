@@ -1,3 +1,15 @@
+-- Enable RLS on the table
+ALTER TABLE realtime.messages ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Authenticated users can receive broadcasts"
+ON "realtime"."messages"
+FOR ALL
+TO authenticated 
+USING ( true );
+
+-- Add table to the realtime publication
+ALTER publication supabase_realtime ADD TABLE "public"."orders";
+
 -- Create a new Order
 CREATE OR REPLACE FUNCTION "public".create_new_order(
   creator_member_id text,
@@ -145,7 +157,7 @@ CREATE OR REPLACE FUNCTION "public".create_new_order(
     -- Create payload of Member who created the Order
     SELECT to_jsonb(row) INTO creator_member_payload
     FROM (
-      SELECT m.id , m.name
+      SELECT m.id AS member_id, m.name
       FROM "public"."members" m
       WHERE m.id = creator_member_id
     ) row;
@@ -153,12 +165,12 @@ CREATE OR REPLACE FUNCTION "public".create_new_order(
     -- Create payload of participant Members in the Order
     SELECT jsonb_agg(
       jsonb_build_object(
-        'id', row.member_id,
+        'member_id', row.member_id,
         'name', row.name
       )
     ) INTO participant_members_arr_payload
     FROM (
-      SELECT m.id, m.name
+      SELECT m.id AS member_id, m.name
       FROM "public"."orders_members" om
       INNER JOIN "public"."members" m ON om.member_id = m.id
       WHERE om.order_id = new_order.id AND om.member_id != creator_member_id AND m.id != creator_member_id

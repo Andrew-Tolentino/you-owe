@@ -24,5 +24,5 @@ export async function POST(request: Request) {
     return Response.json({ error: results.errorMessage }, { status: results.httpCode })
   }
 
-  return Response.json(results.payload, { status:results.httpCode })
+  return Response.json(results.payload, { status: results.httpCode })
 }

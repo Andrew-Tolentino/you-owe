@@ -7,6 +7,7 @@ interface DBClient {
   getEntityByAuthUserId(tableName: string, authUserId: string): Promise<YouOweEntity[] | null>
   getEntityByDBFilters(tableName: string, dbFilters: DBFilterMap[]): Promise<YouOweEntity[] | null>
   createEntity(tableName: string, entity: Partial<YouOweEntity>): Promise<YouOweEntity | null>
+  updateEntityById(tableName: string, id: string, entity: Partial<YouOweEntity>): Promise<YouOweEntity | null>
   deleteEntityById(tableName: string, id: string): Promise<boolean>
   invokeStoredProcedure<T>(procName: string, parameters?: object): Promise<StoredProcedureResults<T>>
   invokeStoredProcedureVoid(procName: string, parameters?: object): Promise<boolean>

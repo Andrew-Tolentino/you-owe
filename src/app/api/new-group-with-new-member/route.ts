@@ -15,7 +15,6 @@ interface NewMemberAndNewGroupDTO {
  * HTTP POST method to create a new User, Member, and Group.
  * 
  * @param {Request} request - Required to contain the 'NewMemberAndNewGroupDTO' within the request body.
- * @returns 
  */
 export async function POST(request: Request) {
   let requestBody: NewMemberAndNewGroupDTO | null = null

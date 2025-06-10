@@ -7,6 +7,7 @@ CREATE TABLE "public"."orders" (
   "price" numeric(8,2) NOT NULL,
   "number_of_participants" int NOT NULL DEFAULT 1,
   "created_at" timestamp WITH TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'UTC'),
+  "updated_at" timestamp WITH TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE 'UTC'),
   "deleted_at" timestamp WITH TIME ZONE,
 
   CONSTRAINT fk_group_id

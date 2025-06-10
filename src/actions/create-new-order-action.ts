@@ -35,7 +35,7 @@ export async function createNewOrderAction(newOrderDTO: NewOrderDTO): Promise<Se
  * @returns {string | null} Returns a string error message if a field is invalid. Else, returns null.
  */
 function validateNewOrderDTO(newOrderDTO: NewOrderDTO): string | null {
-  const { creator_member_id, group_id, title, description ,price } = newOrderDTO
+  const { creator_member_id, group_id, title, description, price } = newOrderDTO
   if (!isString(creator_member_id)) {
     return "'creator_member_id' field is invalid."
   }
