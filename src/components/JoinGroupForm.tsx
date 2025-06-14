@@ -40,9 +40,21 @@ interface JoinGroupFormProps {
    * Member entity populated if an authenticated user is viewing the <CreateGroupForm />.
    */
   member?: Member | null
+
+  /**
+   * ID of Group the User is trying to join.
+   * This is provided when someone is trying to join a Group in groups/[id] that hasn't created a user yet.
+   * We can use the slug value from the URL instead of the form value when this prop is given.
+   */
+  groupId?: string
+
+  /**
+   * Function that will be called if User is able to successfully join group
+   */
+  onSubmit?: () => void
 }
 
-export default function JoinGroupForm({ member }: JoinGroupFormProps) {
+export default function JoinGroupForm({ member, groupId, onSubmit }: JoinGroupFormProps) {
   const [serverErrorMessage, setServerErrorMessage] = useState('')
   
   const form = useForm({
@@ -60,7 +72,7 @@ export default function JoinGroupForm({ member }: JoinGroupFormProps) {
   })
 
   function validateMemberNameField(val: string): string | null {
-    // If there is a Member loaded in, then this field is optional.
+    // If there is a Member provided, then this field is optional.
     // Since there will be no need to create a new Member entity.
     if (!member && !isString(val)) {
       return "Invalid 'Name'."
@@ -70,7 +82,8 @@ export default function JoinGroupForm({ member }: JoinGroupFormProps) {
   }
 
   function validateGroupIdField(val: string): string | null {
-    if (!isString(val)) {
+    // If there is a groupId provided, then this field is optional.
+    if (!groupId && !isString(val)) {
       return "Invalid 'Group ID'."
     }
 
@@ -87,20 +100,26 @@ export default function JoinGroupForm({ member }: JoinGroupFormProps) {
     return null
   }
 
-  async function onSubmit(formData: typeof form.values) {
+  async function onSubmitOriginal(formData: typeof form.values) {
     setServerErrorMessage('')
-    const dto = member ? { member_id: member.id, group_id: formData.groupId, group_password: formData.groupPassword } as JoinGroupDTO : { name: formData.memberName, group_id: formData.groupId, group_password: formData.groupPassword } as NewMemberDTO
+    const dto = member ? { member_id: member.id, group_id: groupId ?? formData.groupId, group_password: formData.groupPassword } as JoinGroupDTO : { name: formData.memberName, group_id: groupId ?? formData.groupId, group_password: formData.groupPassword } as NewMemberDTO
     const serverActionResult = member ? await memberJoinGroupServerAction(dto as JoinGroupDTO) : await createNewMemberAndJoinGroupServerAction(dto as NewMemberDTO) 
     if (!serverActionResult.success) {
-      const errorMessage = serverActionResult.errorMessage ? serverActionResult.errorMessage : HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR
+      const errorMessage = serverActionResult.errorMessage ?? HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR
       setServerErrorMessage(errorMessage)
+      return
+    }
+
+    // Invoke onSubmit prop if available, if not just reset the form
+    if (onSubmit) {
+      onSubmit()
     } else {
       form.reset()
     }
   }
 
   return (
-    <form onSubmit={form.onSubmit(onSubmit)} style={{ marginTop: "14px" }}>
+    <form onSubmit={form.onSubmit(onSubmitOriginal)} style={{ marginTop: "14px" }}>
       {!member ? 
         <TextInput
           size="md"
@@ -113,14 +132,18 @@ export default function JoinGroupForm({ member }: JoinGroupFormProps) {
         null
       }
 
-      <TextInput
-        mt="sm"
-        size="md"
-        label="Group ID"
-        placeholder="ID linked to the group"
-        key={form.key('groupId')}
-        {...form.getInputProps('groupId')}
-      />
+      {!groupId ? 
+        <TextInput
+          mt="sm"
+          size="md"
+          label="Group ID"
+          placeholder="ID linked to the group"
+          key={form.key('groupId')}
+          {...form.getInputProps('groupId')}
+        />
+        : 
+        null
+      }
 
       <TextInput
         mt="sm"

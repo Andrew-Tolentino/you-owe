@@ -3,9 +3,7 @@
 import { Container, Stack, Title } from '@mantine/core'
 import Link from 'next/link'
 
-export default function Error({ _error }: {
-  error: Error & { digest?: string }
-}) {
+export default function Error() {
   return (
     <Container>
       <Stack align="center" justify="center">

@@ -7,13 +7,13 @@ import {
 
 import { IconNumber1, IconNumber2, IconNumber3 } from '@tabler/icons-react'
 
-import CreateGroupForm from '@/components/CreateJoinGroupTabs/CreateGroupForm'
+import CreateGroupForm from '@/components/CreateGroupForm'
 import { supabaseCreateServerClient } from '@/api/clients/supabase/supabase-server-client'
 import { Members } from '@/models/Members'
 import { type Member } from '@/entities/member'
 import { type Group } from '@/entities/group'
 import DisplayGroupsGrid from '@/components/DisplayGroupsGrid'
-import JoinGroupForm from '@/components/CreateJoinGroupTabs/JoinGroupForm'
+import JoinGroupForm from '@/components/JoinGroupForm'
 
 export default async function Page() {
   const supabaseClient = await supabaseCreateServerClient()
