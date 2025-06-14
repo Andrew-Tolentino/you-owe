@@ -17,7 +17,7 @@ export class Users {
    * 
    * @returns {string | null} ID
    */
-  async getUserId(): Promise<string | null> {
+  async getAuthUserId(): Promise<string | null> {
     const superbaseClient = await this.getSupabaseServerClient()
     const { data: { user } } = await superbaseClient.auth.getUser()
 

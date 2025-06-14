@@ -99,6 +99,7 @@ export class Members {
       id: rawMember.id,
       name: rawMember.name,
       created_at: rawMember.created_at,
+      updated_at: rawMember.updated_at,
       deleted_at: rawMember.deleted_at,
       auth_user_id: authUserId
     }

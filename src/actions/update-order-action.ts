@@ -38,7 +38,7 @@ export async function updateOrderAction(updateOrderDTO: UpdateOrderDTO, orderId:
 
   // Verify that the requester is the Order creator
   const users = new Users()
-  const userId = await users.getUserId()
+  const userId = await users.getAuthUserId()
 
   // There is no user found in request
   if (userId === null) {
