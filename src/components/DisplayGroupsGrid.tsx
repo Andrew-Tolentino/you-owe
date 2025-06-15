@@ -51,7 +51,7 @@ export default function DisplayGroupsGrid({ groups }: DisplayGroupsProps) {
           <Text size="sm" c="dimmed">Created at {`${dateCreated.getDate()}/${dateCreated.getMonth()}/${dateCreated.getFullYear()}`}</Text>
 
           <Center>
-            {/** TODO: Need to update this to use a <Link> tag instead, does not need ot be a button */}
+            {/** TODO: Need to update this to use a <Link> tag instead, does not need to be a button */}
             <Button
               color="black"
               mt="md"

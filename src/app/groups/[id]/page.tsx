@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { Container, Stack, Title } from '@mantine/core'
+import { Text } from '@mantine/core'
 
 import DisplayOrdersGrid from '@/components/DisplayOrdersGrid'
 import UserOrNonUserJoinGroupForm from '@/app/groups/[id]/components/UserOrNonUserJoinGroupForm'
@@ -9,6 +9,7 @@ import { Members } from '@/models/Members'
 import { Users } from '@/models/Users'
 import Logger from '@/utils/logger'
 import { WebError } from '@/utils/errors'
+import SimpleError from '@/components/SimpleError'
 
 const LOGGER_PREFIX = '[app/groups/[id]/page]'
 
@@ -17,23 +18,23 @@ const LOGGER_PREFIX = '[app/groups/[id]/page]'
  * Groups flagged as closed means that no new Members can join.
  */
 function RenderGroupIsClosed() {
-  // TODO: Make this UI a modular component for the non-found and error page to use as well.
   return (
-    <Container>
-      <Stack align="center" justify="center">
-        <Title order={1} style={{ textAlign: "center" }}>This Group is marked as closed.</Title>
-        <Title order={4} style={{ textAlign: "center" }}>Groups marked as closed means that no new Members can join them.</Title>
+    <SimpleError 
+      title="400"
+      message="This Group is marked as 'closed' which means that no new Members can join"
+      content={
         <Link href="/">
-          <Title order={4} style={{ textAlign: "center" }}>Go Home</Title>
+          <Text size="sm" c="blue">Go Home</Text>
         </Link>
-      </Stack>
-    </Container>    
+      }
+    />
   )
 }
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   // Check if Group is valid
   const { id } = await params
+  
   const groups = new Groups()
   const group = await groups.fetchGroup(id)
 

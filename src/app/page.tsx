@@ -35,7 +35,7 @@ export default async function Page() {
 
   // If so, present them with a form to create a group that doesn't ask for their name.
   return (
-    // TODO: Going to need to make the <Container> Responseive for mobile use - https://mantine.dev/core/container/#responsive-max-width
+    // TODO: Going to need to make the <Container> Responsive for mobile use - https://mantine.dev/core/container/#responsive-max-width
     <Container>
       <Title order={1} style={{ textAlign: "center" }}>You Owe</Title>
       <Title order={4} style={{ textAlign: "center" }}>Split the bill. Keep it chill.</Title>

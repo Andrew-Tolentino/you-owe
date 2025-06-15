@@ -1,18 +1,18 @@
 import Link from 'next/link'
 
-import { Container, Stack, Title } from '@mantine/core'
+import { Text } from '@mantine/core'
+import SimpleError from '@/components/SimpleError'
 
-// TODO: Fix UI
 export default async function NotFound() {
   return (
-    <Container>
-      <Stack align="center" justify="center">
-        <Title order={1} style={{ textAlign: "center" }}>Oh No!</Title>
-        <Title order={4} style={{ textAlign: "center" }}>There seems to be no Group with that ID.</Title>
+    <SimpleError 
+      title="404"
+      message="There is no Group with that ID"
+      content={
         <Link href="/">
-          <Title order={4} style={{ textAlign: "center" }}>Go Home</Title>
+          <Text size="sm" c="blue">Go Home</Text>
         </Link>
-      </Stack>
-    </Container>
+      }
+    />
   )
 }

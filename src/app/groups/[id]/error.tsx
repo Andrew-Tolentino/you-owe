@@ -1,19 +1,20 @@
 "use client"
 
-import { Container, Stack, Title } from '@mantine/core'
 import Link from 'next/link'
+import { Text } from '@mantine/core'
+
+import SimpleError from '@/components/SimpleError'
 
 export default function Error() {
   return (
-    <Container>
-      <Stack align="center" justify="center">
-        <Title order={1} style={{ textAlign: "center" }}>Oh No!</Title>
-        <Title order={4} style={{ textAlign: "center" }}>Something went wrong when trying to access this Group!.</Title>
-        <Title order={4} style={{ textAlign: "center" }}>If this persists, try creating a new User by hard refreshing your web browser and then going to the Home Page.</Title>
+    <SimpleError 
+      title="500"
+      message="Something went wrong when trying to access this Group"
+      content={
         <Link href="/">
-          <Title order={4} style={{ textAlign: "center" }}>Go Home</Title>
+          <Text size="sm" c="blue">Go Home</Text>
         </Link>
-      </Stack>
-    </Container>
+      }
+    />
   )
 }
