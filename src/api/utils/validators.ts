@@ -40,4 +40,19 @@ export function isValidGroupPassword(password: unknown): string | null {
 
   return null
 }
+
+/**
+ * Checks if a string value is "true". This can be used for things such as query parameters.
+ * 
+ * @param {unknown} val
+ *  
+ * @returns {boolean} Returns true if "val" is string "true", else false
+ */
+export function isStringBooleanTrue(val: unknown): boolean {
+  if (isString(val)) {
+    return ((val as string).toLowerCase() === "true")
+  }
+
+  return false
+}
  
