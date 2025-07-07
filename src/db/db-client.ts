@@ -11,7 +11,7 @@ interface DBClient {
   deleteEntityById(tableName: string, id: string): Promise<boolean>
   invokeStoredProcedure<T>(procName: string, parameters?: object): Promise<StoredProcedureResults<T>>
   invokeStoredProcedureVoid(procName: string, parameters?: object): Promise<boolean>
-  getOneToManyEntities<T extends YouOweEntity, U extends YouOweEntity>(singleRelationTableName: string, manyRelationTableName: string, joinTableName: string, dbFilters: DBFilterMap[]): Promise<{ [key: string]: T | U[]} | null>
+  getOneToManyEntities<T extends YouOweEntity>(singleRelationTableName: string, manyRelationTableName: string, joinTableName: string, dbFilters: DBFilterMap[]): Promise<T[] | null>
 }
 
 /** Mapping used to help apply filters to DB queries */

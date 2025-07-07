@@ -1,7 +1,8 @@
-import { DBClient } from '@/db/db-client'
+import { DBClient, FilterOperator, type DBFilterMap } from '@/db/db-client'
 import { SupabaseDBClient } from '@/db/supabase-client'
 import { type Group, TABLE_NAME as GroupsTable } from '@/entities/group'
-import { TABLE_NAME as MembersGroupsJoinTable, MemberGroup } from '@/entities/member-group'
+import { type MemberGroup, TABLE_NAME as MembersGroupsJoinTable } from '@/entities/member-group'
+import { type Member, TABLE_NAME as MembersTable } from '@/entities/member'
 
 /** Model representing the Group entity that can be used for business logic related to Groups. */
 export class Groups {
@@ -32,7 +33,7 @@ export class Groups {
    * Fetches a Group given its ID.
    * 
    * @param {string} id - ID belonging to Group
-   * @param {boolean} redactPassword - true by default, nullifies password with Group object when true
+   * @param {boolean} redactPassword - true by default, nullifies password within Group object when true
    * 
    * @returns {Promise<Group | null>} Returns Group if found, else null
    */
@@ -53,6 +54,25 @@ export class Groups {
     }
     
     return groups[0]
+  }
+
+  /**
+   * Fetches Members within a Group given the Group ID.
+   *  
+   * @param {string} id - ID belonging to Group
+   * 
+   * @returns {Promise<Member[] | null>} Returns the 
+   */
+  async fetchGroupMembers(id: string): Promise<Member[] | null> {
+    const dbFilters: DBFilterMap[] = [
+      {
+        column: 'id',
+        value: id,
+        operator: FilterOperator.EQUALS
+      }
+    ]
+    const members = await this._dbClient.getOneToManyEntities<Member>(GroupsTable, MembersTable, MembersGroupsJoinTable, dbFilters)
+    return members
   }
 
   /**

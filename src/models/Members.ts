@@ -80,35 +80,26 @@ export class Members {
   }
 
   /**
-   * Fetches a Member and the Groups the Member is linked to.
+   * Fetches all Groups linked to a Member (that they created or are a part of).
    * 
-   * @param {string} authUserId - Auth User ID of the Member
+   * @param {string} id
    * 
-   * @returns {Promise<{ member: Member, groups: Group[] } | null>} The Member and the Groups its associated to, returns null if nothing found
+   * @returns {Promise<Group[] | null>} Returns an array of Groups, or null if an error occured
    */
-  async fetchMemberAndGroups(authUserId: string): Promise<{ member: Member, groups: Group[] } | null> {
-    const dbFilter: DBFilterMap[] = [ { column: 'auth_user_id', value: authUserId, operator: FilterOperator.EQUALS }]
-    const membersAndGroups = await this._dbClient.getOneToManyEntities<Member, Group>(MembersTable, GroupsTable, MembersGroupsJoinTable, dbFilter) 
-    if (membersAndGroups === null) { 
+  async fetchGroupsLinkedToMember(id: string): Promise<Group[] | null> {
+    const dbFilter: DBFilterMap[] = [ { column: 'id', value: id, operator: FilterOperator.EQUALS }]
+    const groups = await this._dbClient.getOneToManyEntities<Group>(MembersTable, GroupsTable, MembersGroupsJoinTable, dbFilter) 
+    
+    if (groups === null) { 
       return null
     }
 
-    // "rawMember" has all the fields of a Member entity plus some other things, so will only return Member related fields
-    const rawMember = membersAndGroups[MembersTable] as Member
-    const member: Member = {
-      id: rawMember.id,
-      name: rawMember.name,
-      created_at: rawMember.created_at,
-      updated_at: rawMember.updated_at,
-      deleted_at: rawMember.deleted_at,
-      auth_user_id: authUserId
-    }
-    const rawGroup = membersAndGroups[GroupsTable] as Group[]
+    // Redact passwords
+    const sanitizedGroups = groups.map((group: Group) => {
+      return { ...group, password: null }
+    })
 
-    return {
-      member,
-      groups: rawGroup.map((val) => ({ ...val, password: null })) // Redact password
-    }
+    return sanitizedGroups
   }
 
   /**

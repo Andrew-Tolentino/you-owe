@@ -8,28 +8,39 @@ import {
 import { IconNumber1, IconNumber2, IconNumber3 } from '@tabler/icons-react'
 
 import CreateGroupForm from '@/components/CreateGroupForm'
-import { supabaseCreateServerClient } from '@/api/clients/supabase/supabase-server-client'
 import { Members } from '@/models/Members'
 import { type Member } from '@/entities/member'
 import { type Group } from '@/entities/group'
 import DisplayGroupsGrid from '@/components/DisplayGroupsGrid'
 import JoinGroupForm from '@/components/JoinGroupForm'
+import { Users } from '@/models/Users'
+import { WebError } from '@/utils/errors'
+import Logger from '@/utils/logger'
+
+const LOGGER_PREFIX = '[app/page]'
 
 export default async function Page() {
-  const supabaseClient = await supabaseCreateServerClient()
-  const { data: { user } } = await supabaseClient.auth.getUser()
+  const users = new Users()
+  const userId = await users.getAuthUserId()
+
   let member: Member | null = null
   let groups: Group[] = []
 
-  if (user) {
+  if (userId) {
     const members = new Members()
-    const memberAndGroups = await members.fetchMemberAndGroups(user.id)
+    // Fetch Member
+    member = await members.fetchMemberByAuthUserId(userId)
 
-    // "memberAndGroups" should not be null
-    if (memberAndGroups !== null) {
-      member = memberAndGroups.member
-      groups = memberAndGroups.groups
+    // Member should not be null if they have a user ID
+    if (member === null) {
+      Logger.error(`${LOGGER_PREFIX} Page: User with ID "${userId}" was found not linked to any Member.`)
+      // Intentionally throwing this error to hit an Error Boundary to show users.
+      // This should not happen, all Users must be associated to a Member
+      throw new WebError()
     }
+
+    // Fetch Groups linked to Member
+    groups = await members.fetchGroupsLinkedToMember(member.id) ?? []
   }
 
 

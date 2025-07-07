@@ -12,11 +12,6 @@ import { type StoredProcedureResults } from '@/types/promise-results-types'
 
 const LOGGER_PREFIX = '[db/supabase-client]'
 
-/** Mapping to help typecast Supabase resultant queries for one:many relationships */
-type OneToManySupabaseMapping<T,U> =  T & {
-  [key: string]: { [key]: U }[]
-}
-
 export class SupabaseDBClient implements DBClient {
   private _supabaseClient: SupabaseClient | null = null
 
@@ -211,17 +206,16 @@ export class SupabaseDBClient implements DBClient {
    * Uses the Supabase client to get a one:many query result. 
    * 
    * @param {string} singleRelationTableName - Table name that has the one mapping
-   * @param {string} manyRelationTableName - Table name that 
+   * @param {string} manyRelationTableName - Table name that has multiple mappings
    * @param {string} joinTableName - Join Table name used for the many:many mapping
    * @param {DBFilterMap[]} dbFilters - Filters (equal/greater than/etc) that can be applied to the query
    * 
-   * @returns {Promise<{ [key: string]: T | U[] } | null>} Returns a map containing information
+   * @returns {Promise<T[] | null> } Returns an array of the Many entities
    */
-  async getOneToManyEntities<T extends YouOweEntity, U extends YouOweEntity>(singleRelationTableName: string, manyRelationTableName: string, joinTableName: string, dbFilters: DBFilterMap[] = []): Promise<{ [key: string]: T | U[] } | null> {
+  async getOneToManyEntities<T extends YouOweEntity>(singleRelationTableName: string, manyRelationTableName: string, joinTableName: string, dbFilters: DBFilterMap[] = []): Promise<T[] | null> {
     const supabaseClient = await this.getSupabaseClient()
     const queryString = 
     `
-    *,
     ${joinTableName} (
       ${manyRelationTableName} ( * )
     )
@@ -237,15 +231,14 @@ export class SupabaseDBClient implements DBClient {
     }
 
     if (!data) {
-      Logger.info(`${LOGGER_PREFIX} getOneToManyEntities: No many:many data found for the following tables - ${singleRelationTableName}, ${manyRelationTableName}, and ${joinTableName}. Filters being applied - ${JSON.stringify(dbFilters)}.`)
-      return { [singleRelationTableName]: [], [manyRelationTableName]: [] }
+      Logger.info(`${LOGGER_PREFIX} getOneToManyEntities: No one:many data found for the following tables - ${singleRelationTableName}, ${manyRelationTableName}, and ${joinTableName}. Filters being applied - ${JSON.stringify(dbFilters)}.`)
+      return []
     }
 
-    const transformedData = data as unknown as OneToManySupabaseMapping<T, U>
-    return {
-      [singleRelationTableName]: transformedData,
-      [manyRelationTableName]: transformedData[joinTableName].map((val) => val[manyRelationTableName])
-    }
+    // Properly map out the type of the returned query data
+    const transformedData = data as unknown as { [key: string]: { [key: string]: T }[] }
+    
+    return transformedData[joinTableName].map((val) => val[manyRelationTableName]) as T[]
   }
 
   /**
