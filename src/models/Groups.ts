@@ -76,6 +76,24 @@ export class Groups {
   }
 
   /**
+   * Updates a Group by ID.
+   * 
+   * @param {string} id - ID of the Group to update 
+   * @param {Partial<Group>} updatedGroup  - Updated Group entity
+   * 
+   * @returns {Promise<Group | null>} the updated Group if update was successful, else null
+   */
+  async updateGroupById(id: string, updatedGroup: Partial<Group>): Promise<Group | null> {
+    const group = await this._dbClient.updateEntityById(GroupsTable, id, updatedGroup)
+    if (group === null) {
+      return null
+    }
+
+    console.log('updateGroupById', group)
+    return group as Group
+  }
+
+  /**
    * Links a Member to a Group via the join table.
    * 
    * @param {string} memberId - The ID of the Member to link

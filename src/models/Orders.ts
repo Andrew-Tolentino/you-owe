@@ -64,12 +64,12 @@ export class Orders {
   /**
    * Fetches a Order given its ID.
    * 
-   * @param {string} orderId - ID belonging to Order
+   * @param {string} id - ID belonging to Order
    * 
    * @returns {Promise<Order | null>} Returns Order if found, else null
    */
-  async fetchOrder(orderId: string): Promise<Order | null> {
-    const order: Order[] | null = await this._dbClient.getEntityById(OrdersTable, orderId) as Order[]
+  async fetchOrder(id: string): Promise<Order | null> {
+    const order: Order[] | null = await this._dbClient.getEntityById(OrdersTable, id) as Order[]
     if (order === null) {
       return null
     }
@@ -84,13 +84,13 @@ export class Orders {
   /**
    * Updates an Order by ID.
    * 
-   * @param {string} orderId - ID of the Order to update
+   * @param {string} id - ID of the Order to update
    * @param {Partial<Order>} updatedOrder - Updated Order entity
    * 
    * @returns {Promise<Order | null>} The updated Order if update was successful, else null
    */
-  async updateOrderById(orderId: string, updatedOrder: Partial<Order>): Promise<Order | null> {
-    const order = await this._dbClient.updateEntityById(OrdersTable, orderId, updatedOrder)
+  async updateOrderById(id: string, updatedOrder: Partial<Order>): Promise<Order | null> {
+    const order = await this._dbClient.updateEntityById(OrdersTable, id, updatedOrder)
     if (order === null) {
       return null
     }

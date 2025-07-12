@@ -28,7 +28,7 @@ ON "public"."groups"
 AS PERMISSIVE
 FOR UPDATE
 TO authenticated
-WITH CHECK (
+USING (
   creator_member_id IN (
     SELECT m.id
     FROM "public"."members" m

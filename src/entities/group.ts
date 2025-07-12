@@ -1,7 +1,5 @@
 import { type YouOweEntity } from '@/entities/entity'
 
-// Bear in blue house, mouse guy
-
 /** Table name corresponding to the Groups entity */
 export const TABLE_NAME = 'groups'
 
@@ -47,4 +45,7 @@ interface Group extends YouOweEntity {
   is_closed: boolean
 }
 
-export type { Group }
+/** Updatable attributes for a Group */
+type UpdateGroupDTO = Partial<Pick<Group, "is_closed">>
+
+export type { Group, UpdateGroupDTO }

@@ -29,5 +29,8 @@ export const HTTP_ERROR_MESSAGES = {
 }
 
 export const ERROR_MESSAGE_FUNCTIONS = {
-  RESOURCE_WITH_ID_NOT_FOUND: (resourceName: string, id: string) => `${resourceName} with id ${id} could not be found.`
+  RESOURCE_WITH_ID_NOT_FOUND: (resourceName: string, id: string) => `${resourceName} with ID ${id} could not be found.`,
+  RESOURCE_WITH_ID_HAS_BEEN_DELETED: (resourceName: string, id: string) => `${resourceName} with ID ${id} has been deleted.`,
+  RESOURCE_NOT_FOUND: (resourceName: string) => `${resourceName} could not be found.`,
+  RESOURCE_NOT_CREATED_BY_USER: (resourceName: string) => `${resourceName} was not created by User.`
 }

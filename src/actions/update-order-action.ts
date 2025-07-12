@@ -13,7 +13,7 @@ const LOGGER_PREFIX = '[actions/update-order-action]'
 /**
  * Updates an Order by first verifying the following:
  *  1. Order exists and has not been deleted
- *  2. Requester is an aunthenticated User
+ *  2. Requester is an authenticated User
  *  3. User is linked to a Member who created the Order
  * 
  * @param {UpdateOrderDTO} updateOrderDTO - DTO to update an Order
@@ -22,6 +22,15 @@ const LOGGER_PREFIX = '[actions/update-order-action]'
  * @returns {Promise<ServerActionResults<Order>>} ServerActionResults containing the updated 'Order' in payload if successful
  */
 export async function updateOrderAction(updateOrderDTO: UpdateOrderDTO, orderId: string): Promise<ServerActionResults<Order>> {
+  // Verify that the requester is the Order creator
+  const users = new Users()
+  const userId = await users.getAuthUserId()
+
+  // There is no user found in request
+  if (userId === null) {
+    return { success: false, errorMessage: HTTP_ERROR_MESSAGES.UNVERIFIABLE_REQUESTER, httpCode: HTTP_CODES.BAD_REQUEST }
+  }
+
   // Fetch current Order given ID
   const orders = new Orders()
   const order = await orders.fetchOrder(orderId)
@@ -33,16 +42,7 @@ export async function updateOrderAction(updateOrderDTO: UpdateOrderDTO, orderId:
 
   // Order has been marked as deleted
   if (order.deleted_at !== null) {
-    return { success: false, errorMessage: `Order with ID "${orderId}" has been deleted.`, httpCode: HTTP_CODES.BAD_REQUEST }
-  }
-
-  // Verify that the requester is the Order creator
-  const users = new Users()
-  const userId = await users.getAuthUserId()
-
-  // There is no user found in request
-  if (userId === null) {
-    return { success: false, errorMessage: HTTP_ERROR_MESSAGES.UNVERIFIABLE_REQUESTER, httpCode: HTTP_CODES.BAD_REQUEST }
+    return { success: false, errorMessage: ERROR_MESSAGE_FUNCTIONS.RESOURCE_WITH_ID_HAS_BEEN_DELETED('Order', orderId), httpCode: HTTP_CODES.BAD_REQUEST }
   }
 
   // Fetch Member associated to User ID found in request
@@ -57,7 +57,7 @@ export async function updateOrderAction(updateOrderDTO: UpdateOrderDTO, orderId:
 
   // Member has been marked as deleted
   if (member.deleted_at !== null) {
-    return { success: false, errorMessage: `Member who created Order with ID "${orderId}" does not exist anymore.`, httpCode: HTTP_CODES.BAD_REQUEST }
+    return { success: false, errorMessage: ERROR_MESSAGE_FUNCTIONS.RESOURCE_NOT_FOUND('User'), httpCode: HTTP_CODES.BAD_REQUEST }
   }
 
   // Member is not the creator of the Order
