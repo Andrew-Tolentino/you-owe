@@ -89,7 +89,6 @@ export class Groups {
       return null
     }
 
-    console.log('updateGroupById', group)
     return group as Group
   }
 

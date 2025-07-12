@@ -126,7 +126,6 @@ export class SupabaseDBClient implements DBClient {
       return null
     }
 
-    console.log('data', data, error, status, statusText, entity)
     return data[0] as YouOweEntity 
   }
 

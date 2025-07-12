@@ -71,7 +71,5 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     return Response.json({ error: errorMessage }, { status: httpCode })
   }
 
-  console.log('payload', payload, success)
-
   return Response.json(payload, { status: httpCode })
 }
