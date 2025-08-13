@@ -1,14 +1,14 @@
 import { SupabaseClient } from '@supabase/supabase-js'
 import { PostgrestError, PostgrestFilterBuilder } from '@supabase/postgrest-js';
 
-import { type DBFilterMap, FilterOperator, type DBClient } from '@/db/db-client'
-import { type YouOweEntity } from '@/entities/entity'
+import { DBFilterMap, FilterOperator, type DBClient } from '@/db/db-client'
+import { YouOweEntity } from '@/entities/entity'
 import { supabaseCreateServerClient } from '@/api/clients/supabase/supabase-server-client'
 import Logger from '@/utils/logger'
 
 import { CUSTOM_DATABASE_ERRORS, DATABASE_SQL_STATE_CUSTOM_ERROR_CODE, type DatabaseError } from '@/db/db-custom-error'
 import { HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
-import { type StoredProcedureResults } from '@/types/promise-results-types'
+import { StoredProcedureResults } from '@/types/promise-results-types'
 
 const LOGGER_PREFIX = '[db/supabase-client]'
 

@@ -4,11 +4,11 @@ import { useState } from 'react'
 import { useForm } from '@mantine/form'
 import { Button, Stack, TextInput, Text, Center } from '@mantine/core'
 
-import { type Member } from '@/entities/member'
+import { Member } from '@/entities/member'
 import { isString, isValidGroupPassword } from '@/api/utils/validators'
 import { HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
-import { type JoinGroupDTO } from '@/api/dtos/JoinGroupDTO'
-import { type NewMemberDTO } from '@/api/dtos/NewMemberDTO'
+import { JoinGroupDTO } from '@/api/dtos/JoinGroupDTO'
+import { NewMemberDTO } from '@/api/dtos/NewMemberDTO'
 import { memberJoinGroupServerAction } from '@/app/actions/member-join-group-server-action'
 import { createNewMemberAndJoinGroupServerAction } from '@/app/actions/create-new-member-and-join-group-server-action'
 
@@ -54,6 +54,12 @@ interface JoinGroupFormProps {
   onSubmit?: () => void
 }
 
+// TODO: Might need to edit this form to look nice when joining a Group not from the Home Page
+/**
+ * Form component to join a Group
+ * 
+ * @param {JoinGroupFormProps} JoinGroupFormProps 
+ */
 export default function JoinGroupForm({ member, groupId, onSubmit }: JoinGroupFormProps) {
   const [serverErrorMessage, setServerErrorMessage] = useState('')
   

@@ -1,4 +1,4 @@
-import { type NewGroupDTO } from '@/api/dtos/NewGroupDTO'
+import { NewGroupDTO } from '@/api/dtos/NewGroupDTO'
 import { HTTP_CODES } from '@/api/utils/HTTPStatusCodes'
 import Logger from '@/utils/logger'
 import { createNewGroupAction } from '@/actions/create-new-group-action'

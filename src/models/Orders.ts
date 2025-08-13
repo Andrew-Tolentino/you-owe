@@ -1,9 +1,9 @@
-import { type NewOrderDTO } from '@/api/dtos/NewOrderDTO'
-import { type DBClient } from '@/db/db-client'
-import { type DatabaseError } from '@/db/db-custom-error'
+import { NewOrderDTO } from '@/api/dtos/NewOrderDTO'
+import { DBClient } from '@/db/db-client'
+import { DatabaseError } from '@/db/db-custom-error'
 import { PROC_CREATE_NEW_ORDER, PROC_GET_ORDERS, type ProcGetOrdersParameters, type ProcCreateNewOrderParameters } from '@/db/stored-procedures'
 import { SupabaseDBClient } from '@/db/supabase-client'
-import { type Order, TABLE_NAME as OrdersTable } from '@/entities/order'
+import { Order, TABLE_NAME as OrdersTable } from '@/entities/order'
 import { OrdersWithMembers } from '@/types/orders-with-members-type'
 
 /** Model representing the Orders entity that can be use for business logic related to Orders. */

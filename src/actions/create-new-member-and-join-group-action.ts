@@ -1,6 +1,6 @@
 import { NewMemberDTO } from '@/api/dtos/NewMemberDTO'
 import { isString } from '@/api/utils/validators'
-import { type ServerActionResults } from '@/types/promise-results-types'
+import { ServerActionResults } from '@/types/promise-results-types'
 import { ERROR_MESSAGE_CLOSED_GROUP, ERROR_MESSAGE_INCORRECT_GROUP_PASSWORD } from '@/actions/member-join-group-action'
 import { ERROR_MESSAGE_FUNCTIONS, HTTP_CODES, HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
 import { Groups } from '@/models/Groups'

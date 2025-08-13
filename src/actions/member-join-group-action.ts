@@ -1,5 +1,5 @@
-import { type JoinGroupDTO } from '@/api/dtos/JoinGroupDTO'
-import { type ServerActionResults } from '@/types/promise-results-types'
+import { JoinGroupDTO } from '@/api/dtos/JoinGroupDTO'
+import { ServerActionResults } from '@/types/promise-results-types'
 import { Members } from '@/models/Members'
 import Logger from '@/utils/logger'
 import { ERROR_MESSAGE_FUNCTIONS, HTTP_CODES, HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'

@@ -2,10 +2,10 @@ import { NextRequest } from 'next/server'
 
 import { ERROR_MESSAGE_FUNCTIONS, HTTP_CODES } from '@/api/utils/HTTPStatusCodes'
 import { Groups } from '@/models/Groups'
-import { type QueryParameters } from '@/types/query-parameters-type'
+import { QueryParameters } from '@/types/query-parameters-type'
 import { isStringBooleanTrue } from '@/api/utils/validators'
 import { TABLE_NAME as MembersTable } from '@/entities/member'
-import { type UpdateGroupDTO } from '@/entities/group'
+import { UpdateGroupDTO } from '@/entities/group'
 import Logger from '@/utils/logger'
 import { updateGroupAction } from '@/actions/update-group-action'
 

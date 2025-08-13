@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 
 import { createNewOrderAction } from '@/actions/create-new-order-action'
 import { fetchOrdersAction } from '@/actions/get-orders-action'
-import { type NewOrderDTO } from '@/api/dtos/NewOrderDTO'
+import { NewOrderDTO } from '@/api/dtos/NewOrderDTO'
 import { HTTP_CODES } from '@/api/utils/HTTPStatusCodes'
 import Logger from '@/utils/logger'
 

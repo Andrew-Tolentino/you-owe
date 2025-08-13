@@ -1,5 +1,5 @@
-import { type YouOweEntity } from '@/entities/entity'
-import { type StoredProcedureResults } from '@/types/promise-results-types'
+import { YouOweEntity } from '@/entities/entity'
+import { StoredProcedureResults } from '@/types/promise-results-types'
 
 /** Base Interface that will be used throughout the application to hide implementation details per DB client provider. */
 interface DBClient {

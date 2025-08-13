@@ -2,9 +2,10 @@
 
 import { revalidatePath } from 'next/cache'
 
-import { type NewMemberDTO } from '@/api/dtos/NewMemberDTO'
+import { NewMemberDTO } from '@/api/dtos/NewMemberDTO'
 import { createNewMemberAndJoinGroupAction } from '@/actions/create-new-member-and-join-group-action'
 
+// TODO write comment
 export async function createNewMemberAndJoinGroupServerAction(newMemberDTO: NewMemberDTO) {
   const results = await createNewMemberAndJoinGroupAction(newMemberDTO)
   if (results.success) {

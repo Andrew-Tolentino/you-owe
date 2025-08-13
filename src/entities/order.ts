@@ -1,4 +1,4 @@
-import { type YouOweEntity } from '@/entities/entity';
+import { YouOweEntity } from '@/entities/entity';
 
 /** Table name corresponding to the Orders entity */
 export const TABLE_NAME = 'orders'

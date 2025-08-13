@@ -1,8 +1,8 @@
 import { FilterOperator, type DBClient, type DBFilterMap } from '@/db/db-client'
 import { PROC_CREATE_NEW_MEMBER_AND_LINK_TO_MEMBERS_GROUPS, ProcCreateNewMemberAndLinkToMemberGroupsParameters } from '@/db/stored-procedures'
 import { SupabaseDBClient } from '@/db/supabase-client'
-import { type Group, TABLE_NAME as GroupsTable } from '@/entities/group'
-import { type Member, TABLE_NAME as MembersTable } from '@/entities/member'
+import { Group, TABLE_NAME as GroupsTable } from '@/entities/group'
+import { Member, TABLE_NAME as MembersTable } from '@/entities/member'
 import {  MemberGroup, TABLE_NAME as MembersGroupsJoinTable } from '@/entities/member-group'
 
 /** Model representing the Member entity that can be use for business logic related to Members. */

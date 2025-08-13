@@ -1,11 +1,11 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { type Member } from '@/entities/member'
+import { Member } from '@/entities/member'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {type  Order } from '@/entities/order'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { type OrdersWithMembers } from '@/types/orders-with-members-type'
+import { OrdersWithMembers } from '@/types/orders-with-members-type'
 
 /**
  * Creates a new Member and then a new Group with that Member as the Group's creator.

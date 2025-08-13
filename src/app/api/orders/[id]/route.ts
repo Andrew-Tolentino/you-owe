@@ -1,5 +1,5 @@
 import { updateOrderAction } from '@/actions/update-order-action'
-import { type UpdateOrderDTO } from '@/api/dtos/UpdateOrderDTO'
+import { UpdateOrderDTO } from '@/api/dtos/UpdateOrderDTO'
 import { HTTP_CODES } from '@/api/utils/HTTPStatusCodes'
 import Logger from '@/utils/logger'
 

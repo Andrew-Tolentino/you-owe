@@ -1,7 +1,7 @@
 import { getHttpCodeFromCustomDatabaseError, HTTP_CODES } from '@/api/utils/HTTPStatusCodes'
 import { Orders } from '@/models/Orders'
-import { type OrdersWithMembers } from '@/types/orders-with-members-type'
-import { type ServerActionResults } from '@/types/promise-results-types'
+import { OrdersWithMembers } from '@/types/orders-with-members-type'
+import { ServerActionResults } from '@/types/promise-results-types'
 
 /**
  * Gets all active Orders belonging to a Group.

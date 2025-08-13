@@ -1,5 +1,5 @@
-import { type NewGroupDTO } from '@/api/dtos/NewGroupDTO'
-import { type NewMemberDTO } from '@/api/dtos/NewMemberDTO'
+import { NewGroupDTO } from '@/api/dtos/NewGroupDTO'
+import { NewMemberDTO } from '@/api/dtos/NewMemberDTO'
 import { HTTP_CODES } from '@/api/utils/HTTPStatusCodes'
 import Logger from '@/utils/logger'
 import { createNewMemberAndGroupAction } from '@/actions/create-new-member-and-group-action'

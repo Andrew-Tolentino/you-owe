@@ -1,9 +1,9 @@
 import { ERROR_MESSAGE_FUNCTIONS, HTTP_CODES, HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
-import { type Group, type UpdateGroupDTO } from '@/entities/group'
+import { Group, type UpdateGroupDTO } from '@/entities/group'
 import { Groups } from '@/models/Groups'
 import { Members } from '@/models/Members'
 import { Users } from '@/models/Users'
-import { type ServerActionResults } from '@/types/promise-results-types'
+import { ServerActionResults } from '@/types/promise-results-types'
 import Logger from '@/utils/logger'
 
 const LOGGER_PREFIX = '[actions/update-group-action]'
@@ -13,12 +13,12 @@ const LOGGER_PREFIX = '[actions/update-group-action]'
  *  1. Group exists and has not been deleted
  *  2. Requester is an authenticated User and creator of the Group
  * 
- * @param {UpdateGroupDTO} updateGroupDTO - DTO to update a Group
  * @param {string} groupId - ID associated to the Group
+ * @param {UpdateGroupDTO} updateGroupDTO - DTO to update a Group
  * 
  * @returns {Promise<ServerActionResults<Group>>} ServerActionResults containing the updated 'Group' in payload if successful
  */
-export async function updateGroupAction(updateGroupDTO: UpdateGroupDTO, groupId: string): Promise<ServerActionResults<Group>> {
+export async function updateGroupAction(groupId: string, updateGroupDTO: UpdateGroupDTO): Promise<ServerActionResults<Group>> {
   // Verify that the requester is authenticated
   const users = new Users()
   const userId = await users.getAuthUserId()

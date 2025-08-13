@@ -1,11 +1,11 @@
-import { type UpdateOrderDTO } from '@/api/dtos/UpdateOrderDTO'
+import { UpdateOrderDTO } from '@/api/dtos/UpdateOrderDTO'
 import { ERROR_MESSAGE_FUNCTIONS, HTTP_CODES, HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes';
 import { isString } from '@/api/utils/validators';
-import { type Order } from '@/entities/order';
+import { Order } from '@/entities/order';
 import { Members } from '@/models/Members';
 import { Orders } from '@/models/Orders';
 import { Users } from '@/models/Users';
-import { type ServerActionResults } from '@/types/promise-results-types'
+import { ServerActionResults } from '@/types/promise-results-types'
 import Logger from '@/utils/logger';
 
 const LOGGER_PREFIX = '[actions/update-order-action]'

@@ -1,8 +1,8 @@
 import { DBClient, FilterOperator, type DBFilterMap } from '@/db/db-client'
 import { SupabaseDBClient } from '@/db/supabase-client'
-import { type Group, TABLE_NAME as GroupsTable } from '@/entities/group'
-import { type MemberGroup, TABLE_NAME as MembersGroupsJoinTable } from '@/entities/member-group'
-import { type Member, TABLE_NAME as MembersTable } from '@/entities/member'
+import { Group, TABLE_NAME as GroupsTable } from '@/entities/group'
+import { MemberGroup, TABLE_NAME as MembersGroupsJoinTable } from '@/entities/member-group'
+import { Member, TABLE_NAME as MembersTable } from '@/entities/member'
 
 /** Model representing the Group entity that can be used for business logic related to Groups. */
 export class Groups {

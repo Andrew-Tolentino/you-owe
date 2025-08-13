@@ -7,10 +7,10 @@ import { useForm } from '@mantine/form'
 import { isString, isValidGroupPassword } from '@/api/utils/validators'
 import { createNewMemberAndGroupServerAction } from '@/app/actions/create-new-member-and-group-server-action'
 import { createNewGroupServerAction } from '@/app/actions/create-new-group-server-action'
-import { type NewMemberDTO } from '@/api/dtos/NewMemberDTO'
-import { type NewGroupDTO } from '@/api/dtos/NewGroupDTO'
+import { NewMemberDTO } from '@/api/dtos/NewMemberDTO'
+import { NewGroupDTO } from '@/api/dtos/NewGroupDTO'
 import { HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
-import { type Member } from '@/entities/member'
+import { Member } from '@/entities/member'
 
 interface SubmitButtonProps {
   /**

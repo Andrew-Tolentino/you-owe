@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 
 import JoinGroupForm from '@/components/JoinGroupForm'
-import { type Member } from '@/entities/member'
+import { Member } from '@/entities/member'
 
 interface UserOrNonUserJoinGroupFormProps {
   /**

@@ -1,6 +1,6 @@
 import { HTTP_CODES } from '@/api/utils/HTTPStatusCodes'
 import Logger from '@/utils/logger'
-import { type JoinGroupDTO } from '@/api/dtos/JoinGroupDTO'
+import { JoinGroupDTO } from '@/api/dtos/JoinGroupDTO'
 import { memberJoinGroupAction } from '@/actions/member-join-group-action'
 
 const LOGGER_PREFIX = '[app/api/members-groups/route]'

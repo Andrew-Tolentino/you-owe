@@ -1,4 +1,4 @@
-import { type YouOweEntity } from '@/entities/entity'
+import { YouOweEntity } from '@/entities/entity'
 
 /** Table name corresponding to the Groups entity */
 export const TABLE_NAME = 'groups'

@@ -1,9 +1,10 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { Text } from '@mantine/core'
+import { AppShell, AppShellHeader, AppShellMain, Text } from '@mantine/core'
 
 import DisplayOrdersGrid from '@/components/DisplayOrdersGrid'
 import UserOrNonUserJoinGroupForm from '@/app/groups/[id]/components/UserOrNonUserJoinGroupForm'
+import GroupNavigationBar from '@/app/groups/[id]/components/GroupNavigationBar'
 import { Groups } from '@/models/Groups'
 import { Members } from '@/models/Members'
 import { Users } from '@/models/Users'
@@ -77,7 +78,17 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     return <UserOrNonUserJoinGroupForm member={member} groupId={id} />
   }
 
+  const { name } = group
+  const isViewerGroupCreator = member.id === group.creator_member_id
   return (
-    <DisplayOrdersGrid groupId={id} />
+    <AppShell>
+      <AppShellHeader>
+        <GroupNavigationBar groupName={name} groupId={id} isGroupCreator={isViewerGroupCreator} />
+      </AppShellHeader>
+
+      <AppShellMain>
+        <DisplayOrdersGrid groupId={id} />
+      </AppShellMain>
+    </AppShell>
   )
 }
