@@ -1,7 +1,7 @@
 "use client"
 
 import { ReactNode } from 'react'
-import { Stack, Title, Center, Text, Divider, Group } from '@mantine/core'
+import { Stack, Title, Center, Text, Divider } from '@mantine/core'
 
 interface SimpleErrorProps {
   /**
