@@ -44,7 +44,7 @@ export default function GroupNavigationBar({ groupName, groupId, isGroupCreator 
       transitionProps={{ transition: 'fade', duration: 200 }}
     >
       <GroupInformationModal groupId={groupId} isGroupCreator={isGroupCreator} />
-    </Modal>
+      </Modal>
     </>
   )
 }
