@@ -79,15 +79,15 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   }
 
   const { name } = group
-  const isViewerGroupCreator = member.id === group.creator_member_id
+  const isGroupCreator = member.id === group.creator_member_id
   return (
-    <AppShell>
+    <AppShell header={{ height: 60 }}>
       <AppShellHeader>
-        <GroupNavigationBar groupName={name} groupId={id} isGroupCreator={isViewerGroupCreator} />
+        <GroupNavigationBar groupName={name} groupId={id} isGroupCreator={isGroupCreator} />
       </AppShellHeader>
 
       <AppShellMain>
-        <DisplayOrdersGrid groupId={id} />
+        <DisplayOrdersGrid groupId={id} memberId={member.id} />
       </AppShellMain>
     </AppShell>
   )

@@ -7,7 +7,14 @@ import { NewMemberDTO } from '@/api/dtos/NewMemberDTO'
 import { createNewMemberAndGroupAction, type CreateNewMemberAndGroupActionPayload } from '@/actions/create-new-member-and-group-action'
 import { ServerActionResults } from '@/types/promise-results-types'
 
-// TODO write comment
+/**
+ * Server Action that creates a new Group and a new Member (Group creator Member).
+ * 
+ * @param {NewMemberDTO} newMemberDTO - Creator Member NewMemberDTO
+ * @param {NewGroupDTO} newGroupDTO
+ * 
+ * @returns {Promise<ServerActionResults<CreateNewMemberAndGroupActionPayload>>} ServerActionResults containing the newly created Member and Group in payload if successful
+ */
 export async function createNewMemberAndGroupServerAction(newMemberDTO: NewMemberDTO, newGroupDTO: NewGroupDTO): Promise<ServerActionResults<CreateNewMemberAndGroupActionPayload>> {
   const results = await createNewMemberAndGroupAction(newMemberDTO, newGroupDTO)
   if (results.success) {

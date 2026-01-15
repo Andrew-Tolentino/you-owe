@@ -36,14 +36,14 @@ export default function GroupNavigationBar({ groupName, groupId, isGroupCreator 
       >
         <IconMenu  />
       </ActionIcon>
-    </Group>
-    <Modal
-      title={groupName}
-      opened={opened}
-      onClose={close}
-      transitionProps={{ transition: 'fade', duration: 200 }}
-    >
-      <GroupInformationModal groupId={groupId} isGroupCreator={isGroupCreator} />
+      </Group>
+      <Modal
+        title={groupName}
+        opened={opened}
+        onClose={close}
+        transitionProps={{ transition: 'fade', duration: 200 }}
+      >
+        <GroupInformationModal groupId={groupId} isGroupCreator={isGroupCreator} />
       </Modal>
     </>
   )

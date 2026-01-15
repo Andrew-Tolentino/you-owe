@@ -43,7 +43,7 @@ interface CreateGroupFormProps {
 }
 
 export default function CreateGroupForm({ member }: CreateGroupFormProps) {
-  const [serverErrorMessage, setServerErrorMessage] = useState('')
+  const [serverErrorMessage, setServerErrorMessage] = useState<string>('')
 
   const form = useForm({
     mode: 'uncontrolled',
