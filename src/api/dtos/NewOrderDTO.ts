@@ -30,11 +30,10 @@ interface NewOrderDTO {
   price: number
 
   /**
-   * Optional
    * 
    * List Member IDs who are going to split the cost of the Order.
    */
-  participant_member_ids?: string[]
+  participant_member_ids: string[]
 }
 
 export { type NewOrderDTO }

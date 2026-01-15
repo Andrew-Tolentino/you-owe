@@ -152,11 +152,10 @@ interface ProcCreateNewOrderParameters {
   target_price: number
 
   /**
-   * Optional
    * 
    * List Member IDs who are going to split the cost of the Order.
    */  
-  target_participant_member_ids: string[] | null
+  target_participant_member_ids: string[]
 }
 export { PROC_CREATE_NEW_ORDER, type ProcCreateNewOrderParameters }
 

@@ -27,8 +27,8 @@ export class Orders {
       target_group_id: newOrderDTO.group_id.trim(),
       target_title: newOrderDTO.title.trim(),
       target_price: newOrderDTO.price,
-      target_description: newOrderDTO.description?.trim() ?? null,
-      target_participant_member_ids: newOrderDTO.participant_member_ids?.map((memberId) => memberId.trim()) ?? []
+      target_participant_member_ids: newOrderDTO.participant_member_ids.map((memberId) => memberId.trim()),
+      target_description: newOrderDTO.description?.trim() ?? null
     }
 
     const storedProcResults = await this._dbClient.invokeStoredProcedure<Order>(PROC_CREATE_NEW_ORDER, procParams)

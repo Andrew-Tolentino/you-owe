@@ -56,9 +56,11 @@ function validateNewOrderDTO(newOrderDTO: NewOrderDTO): string | null {
     return "'price' field is invalid."
   }
 
-  // TODO: Need to verify there are no duplicate values in array
-  // If there are any participant Members, verify their IDs
-  if (newOrderDTO.participant_member_ids && newOrderDTO.participant_member_ids.length > 0) {
+  if (!newOrderDTO.participant_member_ids || newOrderDTO.participant_member_ids.length === 0) {
+    return "'participant_member_ids' field must not be empty."
+  } else {
+    // TODO: Need to verify there are no duplicate values in array
+    // If there are any participant Members, verify their IDs
     for (const id of newOrderDTO.participant_member_ids) {
       if (!isString(id)) {
         return "'participant_member_ids' field contains an invalid value."

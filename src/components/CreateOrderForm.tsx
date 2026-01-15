@@ -25,6 +25,7 @@ import SubmitButton from '@/components/SubmitButton'
 import { isString } from '@/api/utils/validators'
 import { NewOrderDTO } from '@/api/dtos/NewOrderDTO'
 import { createOrderServerAction } from '@/app/actions/create-new-order-action'
+import { HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
 
 /** Mapping of values needed to create an Order */
 interface createOrderForm {
@@ -234,6 +235,7 @@ export default function CreateOrderForm({ orderCreatorMemberId, groupId }: Creat
       const errorMessage = serverActionResult.errorMessage ? serverActionResult.errorMessage : HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR
       setServerErrorMessage(errorMessage)
     } else {
+      // TODO: Make this close modal
       form.reset()
     }
   }
