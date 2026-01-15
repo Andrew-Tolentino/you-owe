@@ -1,3 +1,13 @@
+-- Drop original function since these are overloaded in Postgres
+DROP FUNCTION IF EXISTS "public".create_new_order(
+  creator_member_id text,
+  target_group_id text,
+  target_title text,
+  target_price numeric,
+  target_description text,
+  target_participant_member_ids text[]
+);
+
 -- Create a new Order
 CREATE OR REPLACE FUNCTION "public".create_new_order(
   creator_member_id text,
