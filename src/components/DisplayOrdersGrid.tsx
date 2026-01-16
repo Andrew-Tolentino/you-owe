@@ -78,7 +78,7 @@ export default function DisplayOrdersGrid({ groupId, memberId }: DisplayOrdersGr
         onClose={close}
         transitionProps={{ transition: 'fade', duration: 200 }}
       >
-        <CreateOrderForm orderCreatorMemberId={memberId} groupId={groupId} />
+        <CreateOrderForm orderCreatorMemberId={memberId} groupId={groupId} onSubmitCallback={close} />
       </Modal>
     </>
   )

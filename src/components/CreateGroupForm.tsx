@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from 'react'
-import { TextInput, Button, Center, Text, Stack } from '@mantine/core'
+import { TextInput, Center } from '@mantine/core'
 import { useForm } from '@mantine/form'
 
 import { isString, isValidGroupPassword } from '@/api/utils/validators'
@@ -11,29 +11,7 @@ import { NewMemberDTO } from '@/api/dtos/NewMemberDTO'
 import { NewGroupDTO } from '@/api/dtos/NewGroupDTO'
 import { HTTP_ERROR_MESSAGES } from '@/api/utils/HTTPStatusCodes'
 import { Member } from '@/entities/member'
-
-interface SubmitButtonProps {
-  /**
-   * Decides whether the button should show a loading spinner.
-   */
-  isLoading: boolean
-
-  /**
-   * Displays an error message.
-   */
-  errorMessage: string
-}
-
-function SubmitButton({ isLoading, errorMessage='' }: SubmitButtonProps) {
-  return (
-    <Stack gap="xs">
-      <Button mt="md" type="submit" loading={isLoading} color="black">
-        Create Group
-      </Button>
-      <Text c="red">{errorMessage}</Text>
-    </Stack>
-  )
-}
+import SubmitButton from '@/components/SubmitButton'
 
 interface CreateGroupFormProps {
   /**
@@ -135,7 +113,9 @@ export default function CreateGroupForm({ member }: CreateGroupFormProps) {
       />
 
       <Center>
-        <SubmitButton isLoading={form.submitting} errorMessage={serverErrorMessage} />
+        <SubmitButton isLoading={form.submitting} errorMessage={serverErrorMessage}>
+          Submit
+        </SubmitButton>
       </Center>
     </form>
   )

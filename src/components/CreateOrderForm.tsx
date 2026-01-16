@@ -1,13 +1,5 @@
 "use client"
 
-/**
- * TODO
- *  1. Create submission flow
- *  2. Use new SubmitButton component in <CreateGroupForm>
- *  3. Close modal once Order has successfully been created
- *  4. Attempt to prevent modal from closing when clicking elsewhere from Overlay
- */
-
 import { useEffect, useState } from 'react'
 import { useForm } from '@mantine/form'
 import {
@@ -48,6 +40,9 @@ export interface CreateOrderFormProps {
 
   /** ID of the Group the Order is for */
   groupId: string
+
+  /** Callback after an Order has successfully been created */
+  onSubmitCallback: () => void
 }
 
 /**
@@ -55,7 +50,7 @@ export interface CreateOrderFormProps {
  * 
  * @param {CreateOrderFormProps} CreateOrderFormProps 
  */
-export default function CreateOrderForm({ orderCreatorMemberId, groupId }: CreateOrderFormProps) {
+export default function CreateOrderForm({ orderCreatorMemberId, groupId, onSubmitCallback }: CreateOrderFormProps) {
   const [isInitializing, setIsInitializing] = useState<boolean>(true)
   const [fetchError, setFetchError] = useState<string | null>(null)
   const [members, setMembers] = useState<Member[] | null>(null)
@@ -192,7 +187,7 @@ export default function CreateOrderForm({ orderCreatorMemberId, groupId }: Creat
         <Group mt="md">
           {members?.map((member, index) => 
             (
-              <Chip key={`${index}_${member.id}`} value={member.id}>
+              <Chip key={`${index}_${member.id}`} value={member.id} color="black">
                 {member.name}
               </Chip>
             )
@@ -235,8 +230,8 @@ export default function CreateOrderForm({ orderCreatorMemberId, groupId }: Creat
       const errorMessage = serverActionResult.errorMessage ? serverActionResult.errorMessage : HTTP_ERROR_MESSAGES.INTERNAL_SERVER_ERROR
       setServerErrorMessage(errorMessage)
     } else {
-      // TODO: Make this close modal
       form.reset()
+      onSubmitCallback()
     }
   }
 
@@ -299,9 +294,11 @@ export default function CreateOrderForm({ orderCreatorMemberId, groupId }: Creat
       <Flex justify="flex-end">
         <ActionIcon
           aria-label="select everyone"
+          variant="outline"
+          color="black"
           onClick={setEveryMemberToOrder}
         >
-          <IconUsersGroup />
+          <IconUsersGroup color="black" />
         </ActionIcon>
       </Flex>
       <Text c="red">{form.errors.orderParticipants}</Text>
